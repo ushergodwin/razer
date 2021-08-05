@@ -1,0 +1,29 @@
+{
+	"name": "ushergodwin/phaser",
+	"description": "PHP AND SQL ",
+    "keywords": ["bluefaces", "phaser", "php_sql"],
+	"type": "library",
+	"require": {
+		"vlucas/phpdotenv": "^5.3",
+        "ext-pdo": "*",
+		"opis/closure": "^3.6",
+		"larapack/dd": "^1.1"
+    },
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Tumuhimbise Usher Godwin",
+			"email": "godwintumuhimbise96@gmail.com"
+		}
+	],
+	"autoload": {
+        "files": [
+			"phaser/functions.php"
+		],
+		"psr-4": {
+			"PHASER\\": "phaser/"
+		}
+    },
+	"minimum-stability": "dev",
+    "prefer-stable": true
+}
