@@ -1,13 +1,14 @@
 {
 	"name": "ushergodwin/phaser",
-	"description": "PHP AND SQL ",
+	"description": "phaser SQL is PHP package that provides convenient PHP and SQL functions such that you focus on the system functionality.",
     "keywords": ["bluefaces", "phaser", "php_sql"],
 	"type": "library",
 	"require": {
 		"vlucas/phpdotenv": "^5.3",
         "ext-pdo": "*",
 		"opis/closure": "^3.6",
-		"larapack/dd": "^1.1"
+		"larapack/dd": "^1.1",
+		"php": ">= 7.4"
     },
 	"license": "MIT",
 	"authors": [
