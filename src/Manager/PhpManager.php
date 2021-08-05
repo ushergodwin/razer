@@ -1,15 +1,15 @@
 <?php
-namespace PHASER\Manager;
+namespace Phaser\Manager;
 use FFI\Exception;
-use PHASER\Cookies\Cookies;
-use PHASER\File\File;
-use PHASER\Filters\Filters;
-use PHASER\HttpRequest\HttpRequest;
-use PHASER\HttpResponse\HttpResponse;
-use PHASER\Mail\Mail;
-use PHASER\Password\Password;
-use PHASER\Session\Session;
-use PHASER\Uuid\Uuid;
+use Phaser\Cookies\Cookies;
+use Phaser\File\File;
+use Phaser\Filters\Filters;
+use Phaser\HttpRequest\HttpRequest;
+use Phaser\HttpResponse\HttpResponse;
+use Phaser\Mail\Mail;
+use Phaser\Password\Password;
+use Phaser\Session\Session;
+use Phaser\Uuid\Uuid;
 use stdClass;
 
 /**

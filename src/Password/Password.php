@@ -1,5 +1,5 @@
 <?php
-namespace PHASER\Password;
+namespace Phaser\Password;
 
 /**
  * Class Password

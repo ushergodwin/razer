@@ -13,7 +13,7 @@ class ComposerStaticInitdf6ff4a8e681121c91f8712b5dddf4d8
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         '0e423a14e27410a071e5d815d3ffc856' => __DIR__ . '/..' . '/larapack/dd/src/helper.php',
         '538ca81a9a966a6716601ecf48f4eaef' => __DIR__ . '/..' . '/opis/closure/functions.php',
-        '7d0bf857aec410b71ff4e13f565532a6' => __DIR__ . '/../..' . '/phaser/functions.php',
+        'e14a074c0401d91cdaabfd2487121f30' => __DIR__ . '/../..' . '/src/functions.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -27,7 +27,7 @@ class ComposerStaticInitdf6ff4a8e681121c91f8712b5dddf4d8
         'P' => 
         array (
             'PhpOption\\' => 10,
-            'PHASER\\' => 7,
+            'Phaser\\' => 7,
         ),
         'O' => 
         array (
@@ -64,9 +64,9 @@ class ComposerStaticInitdf6ff4a8e681121c91f8712b5dddf4d8
         array (
             0 => __DIR__ . '/..' . '/phpoption/phpoption/src/PhpOption',
         ),
-        'PHASER\\' => 
+        'Phaser\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/phaser',
+            0 => __DIR__ . '/../..' . '/src',
         ),
         'Opis\\Closure\\' => 
         array (

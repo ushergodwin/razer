@@ -1,6 +1,6 @@
 <?php
 require $_SERVER['DOCUMENT_ROOT'].'/vendor/autoload.php';
-use PHASER\Models\BaseModel;
+use Phaser\Models\BaseModel;
 
 $model = new BaseModel();
 ?>

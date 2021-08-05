@@ -1,12 +1,9 @@
 <?php
-namespace PHASER\Models;
+namespace Phaser\Models;
 
 require_once APPPATH().'/vendor/autoload.php';
-use App\Core\BL_Controller;
-use App\Core\BL_DbModel;
-use App\Core\BL_FileModel;
-use PHASER\Database\Database;
-use PHASER\Manager\PhpManager;
+use Phaser\Database\Database;
+use Phaser\Manager\PhpManager;
 
 /**
  * Access to all BLUEFACES Database Model, File Mode and controller functions.

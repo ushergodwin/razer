@@ -1,5 +1,5 @@
 <?php
-namespace PHASER\Server;
+namespace Phaser\Server;
 /**
  * Class Server
  * All server global variable properties

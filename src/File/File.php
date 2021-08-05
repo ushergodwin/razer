@@ -1,5 +1,5 @@
 <?php
-namespace PHASER\File;
+namespace Phaser\File;
 
 
 /**

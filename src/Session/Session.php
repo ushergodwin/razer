@@ -1,5 +1,5 @@
 <?php
-namespace PHASER\Session;
+namespace Phaser\Session;
 
 /**
  * Class Session

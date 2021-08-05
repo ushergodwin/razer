@@ -1,5 +1,5 @@
 <?php
-namespace PHASER\HttpRequest;
+namespace Phaser\HttpRequest;
 
 class HttpRequest {
 

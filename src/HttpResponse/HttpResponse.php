@@ -1,5 +1,5 @@
 <?php
-namespace PHASER\HttpResponse;
+namespace Phaser\HttpResponse;
 
 class HttpResponse 
 {

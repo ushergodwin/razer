@@ -1,5 +1,5 @@
 <?php
-namespace PHASER\Filters;
+namespace Phaser\Filters;
 
 class Filters
 {

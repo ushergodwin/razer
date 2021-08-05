@@ -1,5 +1,5 @@
 <?php
-namespace PHASER\Database;
+namespace Phaser\Database;
 
 use Exception;
 use PDO;
@@ -16,12 +16,12 @@ define("TIMEZONE", env("TIMEZONE"));
   
 /**
  * @category  Database Access
- * @package   CL_DbModel
+ * @package   Database
  * @author Tumuhimbise Godwin
  * @copyright Copyright (c) 2020-2021
  * @version   2.0
  */
-class BL_DbModel
+class Database
 {
     private $_conn;
 
@@ -36,8 +36,6 @@ class BL_DbModel
     private  $_cols = array();
 
     private   $values = array();
-
-    private  $place_holders = array();
 
     private  $insert_place_holders = array();
 
@@ -112,7 +110,7 @@ class BL_DbModel
         /**
      * Reset states after an execution
      *
-     * @return BL_DbModel Returns the current instance.
+     * @return Database Returns the current instance.
      */
     private function reset() {
         $this->_insertQuery = "";
@@ -1127,4 +1125,4 @@ class BL_DbModel
         return $data;
     }
 }
-//End of Db_model
+//End of Database

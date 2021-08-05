@@ -1,5 +1,5 @@
 <?php
-namespace PHASER\Uuid;
+namespace Phaser\Uuid;
 
 /**
  * Class Unique_Key

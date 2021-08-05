@@ -1,5 +1,5 @@
 <?php
-namespace PHASER\Cookies;
+namespace Phaser\Cookies;
 
 /**
  * Class Cookies

@@ -18,11 +18,20 @@
 	],
 	"autoload": {
         "files": [
-			"phaser/functions.php"
+			"src/functions.php"
 		],
 		"psr-4": {
-			"PHASER\\": "phaser/"
+			"Phaser\\": "src/"
 		}
+    },
+	"extra": {
+        "branch-alias": {
+            "dev-master": "3.6.x-dev"
+        }
+    },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true
     },
 	"minimum-stability": "dev",
     "prefer-stable": true

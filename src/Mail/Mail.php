@@ -1,5 +1,5 @@
 <?php
-namespace PHASER\Mail;
+namespace Phaser\Mail;
 use FFI\Exception;
 
 /**

@@ -12,5 +12,5 @@ return array(
     '667aeda72477189d0494fecd327c3641' => $vendorDir . '/symfony/var-dumper/Resources/functions/dump.php',
     '0e423a14e27410a071e5d815d3ffc856' => $vendorDir . '/larapack/dd/src/helper.php',
     '538ca81a9a966a6716601ecf48f4eaef' => $vendorDir . '/opis/closure/functions.php',
-    '7d0bf857aec410b71ff4e13f565532a6' => $baseDir . '/phaser/functions.php',
+    'e14a074c0401d91cdaabfd2487121f30' => $baseDir . '/src/functions.php',
 );
