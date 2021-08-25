@@ -1,7 +1,7 @@
 {
 	"name": "ushergodwin/phaser",
-	"description": "phaser SQL is PHP package that provides convenient PHP and SQL functions such that you focus on the system functionality.",
-    "keywords": ["bluefaces", "phaser", "php_sql"],
+	"description": "PHP Library",
+    "keywords": ["bluefaces", "phaser", "php", "sql"],
 	"type": "library",
 	"require": {
 		"vlucas/phpdotenv": "^5.3",
@@ -19,10 +19,12 @@
 	],
 	"autoload": {
         "files": [
-			"src/functions.php"
+			"system/functions.php"
 		],
 		"psr-4": {
-			"Phaser\\": "src/"
+			"System\\": "system/",
+			"App\\": "app/",
+			"System\\App\\": "system/App/"
 		}
     },
 	"extra": {

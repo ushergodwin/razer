@@ -5,7 +5,7 @@
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => 'f4265244798d400ed52c0d4b199f316b49c0f159',
+        'reference' => 'cfcc6a4f881421ab3a0d0db18ee25fbcbe27660e',
         'name' => 'ushergodwin/phaser',
         'dev' => true,
     ),
@@ -45,6 +45,15 @@
             'aliases' => array(),
             'reference' => '994ecccd8f3283ecf5ac33254543eb0ac946d525',
             'dev_requirement' => false,
+        ),
+        'squizlabs/php_codesniffer' => array(
+            'pretty_version' => '3.6.0',
+            'version' => '3.6.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../squizlabs/php_codesniffer',
+            'aliases' => array(),
+            'reference' => 'ffced0d2c8fa8e6cdc4d695a743271fab6c38625',
+            'dev_requirement' => true,
         ),
         'symfony/polyfill-ctype' => array(
             'pretty_version' => 'v1.23.0',
@@ -88,7 +97,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => 'f4265244798d400ed52c0d4b199f316b49c0f159',
+            'reference' => 'cfcc6a4f881421ab3a0d0db18ee25fbcbe27660e',
             'dev_requirement' => false,
         ),
         'vlucas/phpdotenv' => array(
