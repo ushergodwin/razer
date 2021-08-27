@@ -17,11 +17,14 @@
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-        <!-- <?php foreach($staff as $v): ?>
 
-        <?php echo $v['username'] ?>
+        <?php foreach($staff as $v): ?>
 
-        <?php endforeach ?> -->
+            <?php echo  $v->first_name  ?> <br/>
+
+        <?php endforeach ?>
+
+        <?php echo  @print_r($staff)  ?>
         
         <script src="" async defer></script>
     </body>

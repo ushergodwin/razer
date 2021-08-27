@@ -83,3 +83,7 @@ function APPPATH()
 {
     return $_SERVER['DOCUMENT_ROOT'];
 }
+
+function ToObject($array) {
+    return json_decode(json_encode($array), FALSE);
+}

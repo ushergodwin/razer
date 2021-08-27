@@ -1372,7 +1372,6 @@ class Database
                 $stmt->execute();
 
             } elseif (!empty($this->_likeData)){
-                print_r($this->_likeData);
 
                 $stmt->execute($this->_likeData);
             }

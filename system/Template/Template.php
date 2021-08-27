@@ -1,6 +1,6 @@
 <?php
 namespace System\Template;
-
+use Exception;
 include_once $_SERVER['DOCUMENT_ROOT'].'/system/config/template.config.php';
 
 class Template {
@@ -58,14 +58,29 @@ class Template {
 		$code = self::compileYield($code);
 		$code = self::compileEscapedEchos($code);
 		$code = self::compileEchos($code);
+		$code = self::compilePrintR($code);
 		$code = self::compilePHP($code);
 		return $code;
+	}
+
+	static function file_contents($path) {
+		$str = @file_get_contents($path);
+		if ($str === FALSE) {
+			throw new Exception("Phaser Template Exception: Cannot access '$path'");
+		} else {
+			return $str;
+		}
 	}
 
 	static function includeFiles($file) {
 		$file .= self::$template_extension;
 		$file = self::$templates_path.$file;
-		$code = file_get_contents($file);
+		$code = "";
+		try {
+			$code = self::file_contents($file);
+		}catch(Exception $e) {
+			echo $e->getMessage();
+		}
 		preg_match_all('/{% ?(extends|include) ?\'?(.*?)\'? ?%}/i', $code, $matches, PREG_SET_ORDER);
 		foreach ($matches as $value) {
 			$code = str_replace($value[0], self::includeFiles($value[2]), $code);
@@ -79,7 +94,15 @@ class Template {
 	}
 
 	static function compileEchos($code) {
-		return preg_replace('~\{{\s*(.+?)\s*\}}~is', '<?php echo $1 ?>', $code);
+		return preg_replace_callback('~\{{\s*(.+?)\s*\}}~is', function ($matches) {
+			return '<?php echo ' . str_replace(['.','{{', '}}'], ['->', '', ''], $matches[0]) . ' ?>';
+		}, $code);
+	}
+
+	static function compilePrintR($code) {
+		return preg_replace_callback('~\{{\s*(@print_r+?)\s*\}}~is', function ($matches) {
+			return '<?php ' . str_replace('@print_r', 'print_r', $matches[0]) . ' ?>';
+		}, $code);
 	}
 
 	static function compileEscapedEchos($code) {

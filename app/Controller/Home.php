@@ -24,9 +24,10 @@ class Home extends BaseController
     
     public function testStaticTable() {
         //$affected = $this->model->update();
+        $staff = ToObject($this->model->testLike());
         $context = [
             "affected" => "0",
-            "staff" => print_r($this->model->testLike())
+            "staff" => $staff
         ];
 
         $this->render('test', $context);
