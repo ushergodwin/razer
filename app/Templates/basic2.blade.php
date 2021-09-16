@@ -1,4 +1,3 @@
-<?php class_exists('System\Template\Template') or exit; ?>
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
@@ -8,7 +7,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
+        <title>{{= $title }}</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="">
@@ -18,14 +17,7 @@
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
-        <?php foreach($staff as $v): ?>
-
-            <?php echo  $v->first_name  ?> <br/>
-
-        <?php endforeach ?>
-
-        <?php echo  @print_r($staff)  ?>
-        
+        <h1>I have been rendered basically.</h1>
         <script src="" async defer></script>
     </body>
 </html>

@@ -29,7 +29,6 @@ use stdClass;
 
 class PhpManager
 {
-    public  $input; //Input class
 
     public  $server; //Server class
 
@@ -58,10 +57,8 @@ class PhpManager
 
         $this->request = new HttpRequest();
         $this->cookie = new Cookies();
-        //Session class
-        $this->session = new Session();
+
         $this->model = new stdClass();
-        $this->password = new Password();
         //Notification class
         $this->response = new HttpResponse();
         //Unique_key class
@@ -114,6 +111,14 @@ class PhpManager
 
     function replace_multiple_spaces($string) {
         return preg_replace('!\s+!', ' ', $string);
+    }
+
+    public function session() {
+        return new Session();
+    }
+
+    public function password() {
+        return new Password();
     }
 
 }

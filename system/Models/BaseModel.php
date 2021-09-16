@@ -16,11 +16,10 @@ use System\Manager\PhpManager;
  * 
  * Access to all BLUEFACES Database Model, File Mode and controller functions.
  * 
- * Call the db property to access the database model
  * 
  * Call the FILES property to access FILES model for uploading multiple files
  * 
- * All your models must extend the BaseModel and should be under the namespace Models
+ * All your models must extend the BaseModel and should be under the namespace App\Models
  * 
  */
 class BaseModel extends PhpManager
@@ -57,7 +56,7 @@ class BaseModel extends PhpManager
             use System\Database\Database;
             class $tableName extends Database {}
             ");
-        $instance = new $tableName ();
+        $instance = new Database ();
 
         $instance->__init__($local_table, '*', $tableData);
         

@@ -1,7 +1,7 @@
 <?php
 namespace System\Database\Migrations;
 //date_default_timezone_set(env("TIMEZONE"));
-require_once @getcwd() .'/app/Config/migrations.php';
+require_once @getcwd() .'/app/Config/migrations.config.php';
 
 $db_config = (object) $config;
 
@@ -17,7 +17,8 @@ define('PASSWORD', $db_config->PASSWORD);
 
 define('DATABASE_NAME', $db_config->DB_NAME);
 
-define('PORT', 3306);
+define('PORT', (int)$db_config->PORT);
+define('MIGRATIONS_DIR', $db_config->MIGRATIONS_DIR);
 
 /**
  * PHASER MIGRATIONS MANAGER
@@ -66,7 +67,11 @@ class Migrations
     }
 
     public static function __init__(string $path) {
-        self::$dir = $path .'/database/migrations/';
+        self::$dir = $path .MIGRATIONS_DIR;
+        if (!file_exists(self::$dir)) {
+            echo "please create migrations path at ".self::$dir . " and try again. \n Exiting..";
+            exit;
+        }
     }
 
     public static function config(array $config, bool $default_db = true, bool $is_table = false) {

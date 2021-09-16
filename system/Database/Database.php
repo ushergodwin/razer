@@ -120,7 +120,7 @@ class Database
         $dsn = "mysql:host=".HOST.";dbname=".$this->_database;
         $conn = (object) "";
         try {
-            $conn = new PDO($dsn, USERNAME, PASSWORD, array(PDO::MYSQL_ATTR_FOUND_ROWS => true));
+            $conn = new PDO($dsn, USERNAME, PASSWORD);
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }catch (PDOException $PDOException) {
             echo $PDOException->getMessage();
@@ -1324,7 +1324,7 @@ class Database
      *
      * @return array An associative array of data.
      */
-    public function get(){
+    public function get(callable|string|bool $callback = true){
         $data = array();
 
         switch ($this->action)
@@ -1347,7 +1347,20 @@ class Database
                 break;
         }
 
-        return $data;
+        if (!is_callable($callback) && !empty(trim($callback)) && !$callback) {
+            $data = ToObject($data);
+            return  $callback($data);
+        }
+
+        if (is_callable($callback)) {
+            $data = ToObject($data);
+            return call_user_func_array($callback, [$data]);
+        }
+        
+        if (!$callback){
+            return $data;
+        }
+        return ToObject($data);
     }
 
 
@@ -1390,6 +1403,7 @@ class Database
 
     public function __destruct()
     {
+        $this->_conn = $this->connect();
         $this->_conn = null;
     }
 }

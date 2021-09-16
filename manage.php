@@ -12,7 +12,9 @@ Migrations::__init__(__DIR__);
 $shortopts  = "";
 $shortopts .= "m:";  // Required value
 $shortopts .= "e:";
+$shortopts .= "t:";
 $shortopts .= "d:";
+$shortopts .= "b:";
 $shortopts .= "v::"; // Optional value
 $shortopts .= "h::";
 $shortopts .= "i::";
@@ -66,32 +68,16 @@ $options = getopt($shortopts, $longopts);
         Run all Migrations:  php manage.php -migrate
         List all Migrations:  php manage.php -m list
         Make migration for an entire database: php manage.phy -export
-        Make migration for a specific table: php manage.php -e table_name
+        Make migration for a specific table: php manage.php -t table_name
         Make migration for multiple tables: php manage.php -e table1,table2,table2..
+        Make migration for a different database: php manage.php -b db_name
+        Drop Migration: php manage.php -d migration_name
         For more Info: php manage.php -info ";
  } elseif(!empty($options['i'])) {
      Migrations::README();
  }elseif(!empty($options['e'])) {
      $args = explode(',', $options['e']);
      Migrations::config(['tables' => $args]);
-     if (count($args) === 1 and $options['e'] !== 'xport') {
-
-        echo 'Is '.$args[0].' a table(1) or database(2)? [1/2] ';
-
-        if (!in_array(trim(fgets(STDIN)), array('1'))) {
-
-            echo 'Attempting to use the provided database ' . "\n";
-
-            Migrations::config(['tables' => [0 => $options['e']]], false);
-        }
-        else {
-
-            Migrations::config(['tables' => [0 => $options['e']]], true, true);
-            echo 'If you have multiple tables to export, separate them with commas' . "\n";
-        }
-        echo 'Continuing' . "\n";
-     }
-     
      Migrations::exportDataForMigration();
  } elseif (!empty($options['v'])) {
     
@@ -99,7 +85,13 @@ $options = getopt($shortopts, $longopts);
  }  elseif (!empty($options['d'])) {
      Migrations::config(["table" => $options['d']]);
      Migrations::dropMigration();
- }
- else {
+ } elseif (!empty($options['t'])) {
+    Migrations::config(['tables' => [0 => $options['t']]], true, true);
+    Migrations::exportDataForMigration();
+ } elseif (!empty($options['b'])) {
+    Migrations::config(['tables' => [0 => $options['b']]], true, true);
+    echo 'Attempting to use the provided database ' . "\n";
+    Migrations::exportDataForMigration();
+ } else {
      echo "Sorry, I did not understand what you mean ";
  }

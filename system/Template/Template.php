@@ -16,7 +16,7 @@ class Template {
 		self::$templates_path = $templates_path;
 	}
 
-	static function templateExtension(string $extension = '.html')
+	static function templateExtension(string $extension = '.blade.php')
 	{
 		self::$template_extension = $extension;
 	}
@@ -35,11 +35,13 @@ class Template {
 	}
 
 	static function cache($file) {
+
 		if (!file_exists(self::$cache_path)) {
 		  	mkdir(self::$cache_path, 0744);
 		}
-	    $cached_file = self::$cache_path . str_replace(array('/', '.'), array('_', ''), $file . '.php');
-	    if (!self::$cache_enabled || !file_exists($cached_file) || filemtime($cached_file) < filemtime($file)) {
+	    $cached_file = self::$cache_path . str_replace(array('/', '.'), array('_', ''), sha1($file). '.php');
+		$original_file = self::$templates_path.$file.self::$template_extension;
+	    if (!self::$cache_enabled || !file_exists($cached_file) || filemtime($cached_file) < filemtime($original_file)) {
 			$code = self::includeFiles($file);
 			$code = self::compileCode($code);
 	        file_put_contents($cached_file, '<?php class_exists(\'' . __CLASS__ . '\') or exit; ?>' . PHP_EOL . $code);
@@ -55,10 +57,10 @@ class Template {
 
 	static function compileCode($code) {
 		$code = self::compileBlock($code);
-		$code = self::compileYield($code);
+		$code = self::compileLoad($code);
 		$code = self::compileEscapedEchos($code);
 		$code = self::compileEchos($code);
-		$code = self::compilePrintR($code);
+		$code = self::compileConstants($code);
 		$code = self::compilePHP($code);
 		return $code;
 	}
@@ -90,23 +92,19 @@ class Template {
 	}
 
 	static function compilePHP($code) {
-		return preg_replace('~\{%\s*(.+?)\s*\%}~is', '<?php $1 ?>', $code);
+		return preg_replace('~\{%\s\@*(.+?)\s*\%}~is', '<?php $1 ?>', $code);
 	}
 
 	static function compileEchos($code) {
-		return preg_replace_callback('~\{{\s*(.+?)\s*\}}~is', function ($matches) {
-			return '<?php echo ' . str_replace(['.','{{', '}}'], ['->', '', ''], $matches[0]) . ' ?>';
-		}, $code);
-	}
-
-	static function compilePrintR($code) {
-		return preg_replace_callback('~\{{\s*(@print_r+?)\s*\}}~is', function ($matches) {
-			return '<?php ' . str_replace('@print_r', 'print_r', $matches[0]) . ' ?>';
-		}, $code);
+		return preg_replace('~\{!!\s*(.+?)\s*\!!}~is', '<?php echo $1 ?>', $code);
 	}
 
 	static function compileEscapedEchos($code) {
-		return preg_replace('~\{{{\s*(.+?)\s*\}}}~is', '<?php echo htmlentities($1, ENT_QUOTES, \'UTF-8\') ?>', $code);
+		$code = preg_replace_callback('/\{{\s*(\$\w*\..+?)\s*\}}/', function ($matches) {
+			//compile loops;
+			return '<?php echo ' . str_replace('.', '->', $matches[1]) . ' ?>';
+		}, $code);
+		return preg_replace('~\{{\s*(.+?)\s*\}}~is', '<?php echo htmlspecialchars($1, ENT_QUOTES, \'UTF-8\') ?>', $code);
 	}
 
 	static function compileBlock($code) {
@@ -123,12 +121,16 @@ class Template {
 		return $code;
 	}
 
-	static function compileYield($code) {
+	static function compileLoad($code) {
 		foreach(self::$blocks as $block => $value) {
-			$code = preg_replace('/{% ?yield ?' . $block . ' ?%}/', $value, $code);
+			$code = preg_replace('/{% ?load ?' . $block . ' ?%}/', $value, $code);
 		}
-		$code = preg_replace('/{% ?yield ?(.*?) ?%}/i', '', $code);
+		$code = preg_replace('/{% ?load ?(.*?) ?%}/i', '', $code);
 		return $code;
+	}
+
+	static function compileConstants($code) {
+		return preg_replace('/(\@)(crsf)/', '<?php echo $1 ?>', $code);
 	}
 
 }

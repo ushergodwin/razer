@@ -4,12 +4,13 @@
     "keywords": ["bluefaces", "phaser", "php", "sql"],
 	"type": "library",
 	"require": {
-		"vlucas/phpdotenv": "^5.3",
-        "ext-pdo": "*",
-		"opis/closure": "^3.6",
+		"php": ">= 7.4",
+		"ext-pdo": "*",
 		"larapack/dd": "^1.1",
-		"php": ">= 7.4"
-    },
+		"league/booboo": "^2.2",
+		"opis/closure": "^3.6",
+		"vlucas/phpdotenv": "^5.3"
+	},
 	"license": "MIT",
 	"authors": [
 		{

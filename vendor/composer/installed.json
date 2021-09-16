@@ -113,6 +113,58 @@
             "install-path": "../larapack/dd"
         },
         {
+            "name": "league/booboo",
+            "version": "2.2",
+            "version_normalized": "2.2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/booboo.git",
+                "reference": "5f2d93a329df9ccb9edf77dac83c483829893d2e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/booboo/zipball/5f2d93a329df9ccb9edf77dac83c483829893d2e",
+                "reference": "5f2d93a329df9ccb9edf77dac83c483829893d2e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6.0",
+                "psr/log": "~1.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "~0.9",
+                "phpunit/phpunit": "~5.7",
+                "sentry/sentry": "~1.7"
+            },
+            "suggest": {
+                "sentry/sentry": "Use Sentry for passing errors to Sentry."
+            },
+            "time": "2017-12-13T15:55:44+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "League\\BooBoo\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Brandon Savage",
+                    "homepage": "https://www.brandonsavage.net/"
+                }
+            ],
+            "description": "Provides an error handler for PHP that can execute a stack of handlers for various purposes.",
+            "support": {
+                "issues": "https://github.com/thephpleague/booboo/issues",
+                "source": "https://github.com/thephpleague/booboo/tree/master"
+            },
+            "install-path": "../league/booboo"
+        },
+        {
             "name": "opis/closure",
             "version": "3.6.2",
             "version_normalized": "3.6.2.0",
@@ -253,63 +305,57 @@
             "install-path": "../phpoption/phpoption"
         },
         {
-            "name": "squizlabs/php_codesniffer",
-            "version": "3.6.0",
-            "version_normalized": "3.6.0.0",
+            "name": "psr/log",
+            "version": "1.1.4",
+            "version_normalized": "1.1.4.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "ffced0d2c8fa8e6cdc4d695a743271fab6c38625"
+                "url": "https://github.com/php-fig/log.git",
+                "reference": "d49695b909c3b7628b6289db5479a1c204601f11"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/ffced0d2c8fa8e6cdc4d695a743271fab6c38625",
-                "reference": "ffced0d2c8fa8e6cdc4d695a743271fab6c38625",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/d49695b909c3b7628b6289db5479a1c204601f11",
+                "reference": "d49695b909c3b7628b6289db5479a1c204601f11",
                 "shasum": ""
             },
             "require": {
-                "ext-simplexml": "*",
-                "ext-tokenizer": "*",
-                "ext-xmlwriter": "*",
-                "php": ">=5.4.0"
+                "php": ">=5.3.0"
             },
-            "require-dev": {
-                "phpunit/phpunit": "^4.0 || ^5.0 || ^6.0 || ^7.0"
-            },
-            "time": "2021-04-09T00:54:41+00:00",
-            "bin": [
-                "bin/phpcs",
-                "bin/phpcbf"
-            ],
+            "time": "2021-05-03T11:20:27+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.x-dev"
+                    "dev-master": "1.1.x-dev"
                 }
             },
             "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Log\\": "Psr/Log/"
+                }
+            },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "BSD-3-Clause"
+                "MIT"
             ],
             "authors": [
                 {
-                    "name": "Greg Sherwood",
-                    "role": "lead"
+                    "name": "PHP-FIG",
+                    "homepage": "https://www.php-fig.org/"
                 }
             ],
-            "description": "PHP_CodeSniffer tokenizes PHP, JavaScript and CSS files and detects violations of a defined set of coding standards.",
-            "homepage": "https://github.com/squizlabs/PHP_CodeSniffer",
+            "description": "Common interface for logging libraries",
+            "homepage": "https://github.com/php-fig/log",
             "keywords": [
-                "phpcs",
-                "standards"
+                "log",
+                "psr",
+                "psr-3"
             ],
             "support": {
-                "issues": "https://github.com/squizlabs/PHP_CodeSniffer/issues",
-                "source": "https://github.com/squizlabs/PHP_CodeSniffer",
-                "wiki": "https://github.com/squizlabs/PHP_CodeSniffer/wiki"
+                "source": "https://github.com/php-fig/log/tree/1.1.4"
             },
-            "install-path": "../squizlabs/php_codesniffer"
+            "install-path": "../psr/log"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -738,7 +784,5 @@
         }
     ],
     "dev": true,
-    "dev-package-names": [
-        "squizlabs/php_codesniffer"
-    ]
+    "dev-package-names": []
 }

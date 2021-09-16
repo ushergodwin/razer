@@ -28,11 +28,16 @@ class ComposerStaticInitdf6ff4a8e681121c91f8712b5dddf4d8
         ),
         'P' => 
         array (
+            'Psr\\Log\\' => 8,
             'PhpOption\\' => 10,
         ),
         'O' => 
         array (
             'Opis\\Closure\\' => 13,
+        ),
+        'L' => 
+        array (
+            'League\\BooBoo\\' => 14,
         ),
         'G' => 
         array (
@@ -73,6 +78,10 @@ class ComposerStaticInitdf6ff4a8e681121c91f8712b5dddf4d8
         array (
             0 => __DIR__ . '/..' . '/symfony/var-dumper',
         ),
+        'Psr\\Log\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
         'PhpOption\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpoption/phpoption/src/PhpOption',
@@ -80,6 +89,10 @@ class ComposerStaticInitdf6ff4a8e681121c91f8712b5dddf4d8
         'Opis\\Closure\\' => 
         array (
             0 => __DIR__ . '/..' . '/opis/closure/src',
+        ),
+        'League\\BooBoo\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/league/booboo/src',
         ),
         'GrahamCampbell\\ResultType\\' => 
         array (

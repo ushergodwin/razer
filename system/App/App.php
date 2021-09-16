@@ -35,10 +35,10 @@ class App
      */
     public static function Run() {
 
-        (new self)->__inite__();
+        (new self)->__init__();
     }
 
-    private function __inite__() {
+    private function __init__() {
         $routes = Route::$routes;
 
         $uri = $_SERVER['REQUEST_URI'];
@@ -68,9 +68,11 @@ class App
         $this->map_uri_to_method($routes, $args, $args_array);
     }
 
+
+
     private function map_uri_to_method($routes, $args, $args_array)
-    {
-        
+    {   
+
         foreach ($routes as $route => $val) {
             $is_args_supplied = false;
             $dynamic_route = explode("/", $route);
@@ -81,9 +83,23 @@ class App
                 //unset($dynamic_route[count($dynamic_route) - 1]);
             }
             if (! $is_args_supplied) {
+                //Less build the function from the appropriate file
+                $val_route = array();
+
                 if ($route == $args) {
-                    //Less build the function from the appropriate file
-                    $val_route = explode("::", $val);
+                    if (is_callable($val)) {
+                        
+                        call_user_func($val);
+                        return;
+                    }else {
+                        $val_route = explode("::", $val);
+                    }
+
+                    if (!file_exists(APP_PATH."Controller/" . $val_route[0] . ".php")) {
+                        call_user_func(array("BasicRoute", "index"));
+                        return;
+                    }
+
                     include_once(APP_PATH."Controller/" . $val_route[0] . ".php");
                     $class_ucfirst = ucfirst($val_route[0]);
                     

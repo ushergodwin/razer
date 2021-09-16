@@ -1,6 +1,6 @@
 <?php
 namespace System\HttpRequest;
-
+use FFI\Exception;
 class HttpRequest {
 
 
@@ -42,41 +42,47 @@ class HttpRequest {
      * @param string $default The default value to return in case the key is not found
      * @return string Data
      */
-    public function post($string = '', string $default='') {
+    public function post(string $key, string $default='') {
+        if (isset($_POST[$key]) and !isset($_POST['phaser_csrf'])) {
+            throw new Exception("The request can not be proccessed because it's missing the CRSF token. use the Phaser crsf constant to generate the token for POST requests");
+        }
+    
+        if ($_POST['phaser_crsf'] !== $_SESSION['crsf']) {
+            throw new Exception("The request can not be proccessed because it has an invalid CRSF token.");
+        }
+        $key = trim($key);
 
-        $string = trim($string);
-
-        if (isset($_POST[$string]))
-            return filter_var(strip_tags($_POST[$string]), FILTER_SANITIZE_STRING);
+        if (isset($_POST[$key]))
+            return filter_var(strip_tags($_POST[$key]), FILTER_SANITIZE_STRING);
         
         return $default;
     }
 
     /**
      * Get values parsed in an HTTP GET request
-     * @param string $string
+     * @param string $key
      * @param string $default The default value to return in case the key is not found
      * @return string Data
      */
-    public function get($string = '', string $default='') {
+    public function get(string $key, string $default='') {
 
-        $string = trim($string);
+        $string = trim($key);
         if (isset($_POST[$string]))
-        return filter_var(strip_tags($_GET[$string]), FILTER_SANITIZE_STRING);
+            return filter_var(strip_tags($_GET[$string]), FILTER_SANITIZE_STRING);
     
         return $default;
     }
 
     /**
      * Get the values parsed in the HTTP GET or POST methods
-     * @param string $string
+     * @param string $key
      * @param string $default The default value to return in case the key is not found
      * @return string Data
      */
-    public function any(string $string = "", string $default='') {
+    public function any(string $key, string $default='') {
 
-        if (isset($_REQUEST[$string]))
-            return filter_var(strip_tags($_REQUEST[$string]), FILTER_SANITIZE_STRING);
+        if (isset($_REQUEST[$key]))
+            return filter_var(strip_tags($_REQUEST[$key]), FILTER_SANITIZE_STRING);
         return $default;
     }
 
