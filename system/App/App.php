@@ -1,32 +1,23 @@
 <?php
 namespace System\App;
+include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/autoload.php';
+
+strtolower(env("AUTO_START_SESSION")) === "true" ? session_start() : NULL;
+strtolower(env("ERROR_REPORTING")) === "true" ? ini_set('display_errors', 1) : ini_set('display_errors', 0);
 
 use System\Controller\Route;
-session_set_cookie_params(33600, '/', $_SERVER['SERVER_NAME'], FALSE, TRUE);
+use System\HttpRequest\HttpRequest;
 
-////Error reporting
-ini_set('max_execution_time', 0);
-//ini_set('display_errors', 'on');
-error_reporting(-1);
 
 define("SYSTEM_PATH", "system/");
 
 define("APP_PATH", "app/");
 
-include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/autoload.php';
-
 include_once($_SERVER['DOCUMENT_ROOT'] . "/". APP_PATH."Routes/routes.php");
 
-$routes = Route::$routes;
 
 class App 
 {
-    // private $routes;
-
-    public function __construct()
-    {
-        // $this->routes = Route::$routes;
-    }
 
     /**
      * Run the application
@@ -52,7 +43,7 @@ class App
 
         $args = [];
         for ($i = 1; $i < count($uri_exploded); $i++) {
-            if (strlen($uri_exploded[$i]) < 1)
+            if (strlen($uri_exploded[$i]) <= 1)
                 //For urls that end in slashes, we truncate the last space and match the uri to the perfect route
                 //Eg, ./some/ and ./some are the same. There we treat both as the same
                 continue;
@@ -71,8 +62,8 @@ class App
 
 
     private function map_uri_to_method($routes, $args, $args_array)
-    {   
-
+    {
+        
         foreach ($routes as $route => $val) {
             $is_args_supplied = false;
             $dynamic_route = explode("/", $route);
@@ -89,21 +80,20 @@ class App
                 if ($route == $args) {
                     if (is_callable($val)) {
                         
-                        call_user_func($val);
+                        call_user_func_array($val, [new HttpRequest]);
                         return;
                     }else {
                         $val_route = explode("::", $val);
-                    }
-
-                    if (!file_exists(APP_PATH."Controller/" . $val_route[0] . ".php")) {
-                        call_user_func(array("BasicRoute", "index"));
-                        return;
                     }
 
                     include_once(APP_PATH."Controller/" . $val_route[0] . ".php");
                     $class_ucfirst = ucfirst($val_route[0]);
                     
                     $class = New $class_ucfirst;
+                    if ($_SERVER['REQUEST_METHOD'] == "POST"){
+                      call_user_func_array(array($class, $val_route[1]), [new HttpRequest]);
+                        return;
+                    }
                     call_user_func(array($class, $val_route[1]));
                     //Lets deal with function arguments;
                     return;
@@ -155,14 +145,6 @@ class App
 
     private function urlNotFound() {
         header("HTTP/1.0 404 Not Found");
-        echo "<div style='width: 100%; max-width:600px; margin:auto'>
-        <h3>Page not found</h3>
-        <p>The above page you are looking cannot be found at url
-            //:".$_SERVER['HTTP_HOST'] . "/" . $_SERVER['REQUEST_URI']."
-            <br/>Contact the administrator of this site or recheck the url again.
-            <br/>
-            <small>Default Error page for BLUEFACES PHP LIBRARY.</small>
-        </p>
-    </div>";
+        exit("<div align='center'><a href='/'><img src='".url('404.jpg')."'/> </div></a> ");
     }
 }

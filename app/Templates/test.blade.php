@@ -24,7 +24,7 @@
         {% @endforeach %}
 
         <br/>
-        <a href="{{ baseUrl('basic.html')}}">Go</a>
+        <a href="{{ url('basic.html')}}">Go</a>
         
         <script src="" async defer></script>
     </body>

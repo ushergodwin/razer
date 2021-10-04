@@ -14,4 +14,6 @@ RewriteCond %{REQUEST_FILENAME} !-f
 # Change below before deploying to production
 #RewriteRule ^(.*)$ /index.php [QSA,L]
 RewriteRule ^(.*)$ /index.php [QSA,L]
+
+php_value max_execution_time 1000
 </IfModule>

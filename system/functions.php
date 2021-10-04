@@ -1,7 +1,7 @@
 <?php
-
-use System\Models\BaseModel;
 use League\BooBoo\BooBoo;
+use System\HttpResponse\HttpResponse;
+
 require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(dirname( __DIR__));
@@ -45,7 +45,7 @@ if (!function_exists('d')) {
 * @return string The a full main url
 * eg http://bluefaces.tech/
 */
-function baseUrl(string $url = '') {
+function url(string $url = '') {
     $base = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https" : "http");
     $base .= "://".$_SERVER['HTTP_HOST']."/";
     !empty(trim($url)) ? $base .= $url : $base;
@@ -79,49 +79,32 @@ function APPPATH()
  * @param array $array
  * @return object
  */
-function ToObject(array $array) {
+function array_to_object(array $array) {
     return json_decode(json_encode($array), FALSE);
 }
 
-/**
- * Get the value parsed using the GET HTTP Request
- * @return string
- */
-function httpGet(string $key, string $default = '') {
-    if (!isset($_GET[$key])) {
-        return $default;
-    }
-    return strip_tags($_GET[$key]);
-}
 
 /**
- * Get the value parsed using the POST HTTP Request
- * @return string
+ * Object to array
+ *
+ * @param mixed $data
+ * @return array
  */
-function httpPost(string $key, string $default = '') {
-    if (isset($_POST[$key]) and !isset($_POST['phaser_csrf'])) {
-        throw new Exception("The request can not be proccessed because it's missing the CRSF token. use the Phaser crsf constant to generate the token for POST requests");
+function object_to_array($data)
+{
+    if (is_array($data) || is_object($data))
+    {
+        $result = [];
+        foreach ($data as $key => $value)
+        {
+            $result[$key] = (is_array($data) || is_object($data)) ? object_to_array($value) : $value;
+        }
+        return $result;
     }
-
-    if ($_POST['phaser_crsf'] !== $_SESSION['crsf']) {
-        throw new Exception("The request can not be proccessed because it has an invalid CRSF token.");
-    }
-    if (!isset($_POST[$key])) {
-        return $default;
-    }
-    return strip_tags($_POST[$key]);
+    return $data;
 }
 
-/**
- * Get the value parsed using the GET/POST HTTP Request
- * @return string
- */
-function httpAny(string $key, string $default = '') {
-    if (!isset($_REQUEST[$key])) {
-        return $default;
-    }
-    return strip_tags($_REQUEST[$key]);
-}
+
 
 /**
  * Http Bad request 403
@@ -129,21 +112,6 @@ function httpAny(string $key, string $default = '') {
  * @param string $message Message to print on the screen
  * @return never
  */
-function HttpBadRequest(string $message) {
-    header("HTTP/1.0 403 Bad Request");
-    exit($message);
-}
-
-/**
- * Database Operations
- *
- * @param mixed $table Table name to transact
- * @param array $data Table data in case of insert or update operations
- * @return object
- */
-function Table($table, array $data = []) {
-    return BaseModel::table($table, $data);
-}
 
 /**
  * Get|set session kesys
@@ -152,14 +120,14 @@ function Table($table, array $data = []) {
  * @param string|callable $default The deafult value to return if the key is not found or a callback function
  * @return void|string|callback
  */
-function session(string|array $key, callable|string $default ='') {
+function session($key, $default =NULL) {
     if (is_array($key)) {
         foreach($key as $session_key => $value) {
             $_SESSION[$session_key] = $value;
         }
         return;
     }
-    if (!isset($_SESS[$key])) {
+    if (!isset($_SESSION[$key])) {
         if(!is_callable($default)) {
             return $default;
         }
@@ -168,8 +136,29 @@ function session(string|array $key, callable|string $default ='') {
 
     return $_SESSION[$key];
 }
+
+/**
+ * Access app assets
+ *
+ * @param string $asset
+ * @return string asset url
+ */
+function assets(string $asset){
+    return url('assets/'.$asset);
+}
+
+function response()
+{
+    return new HttpResponse();
+}
+
+
 //CONSTANTS;
 //csrf
-$csrf = sha1(uniqid('phaser_csrf_'));
-$_SESSION['csrf'] = $csrf;
-define('csrf', "<input type='hidden' name='phaser_csrf' value = '$csrf'>");
+
+$_SESSION['token'] = bin2hex(random_bytes(35));
+$csrf = $_SESSION['token'];
+
+define('csrf', "<input type='hidden' name='_token' value = '$csrf'>");
+define('APPNAME', env('APP_NAME'));
+define('APPPATH', $_SERVER['DOCUMENT_ROOT']);

@@ -1,46 +1,59 @@
 <?php
 namespace System\Mail;
-use FFI\Exception;
+use Exception;
+use PHPMailer\PHPMailer\Exception as PHPMailerException;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+
+require_once $_SERVER['DOCUMENT_ROOT'].'/vendor/autoload.php';
 
 /**
- * Send Mail using mail()
+ * Send Mail
  */
-class Mail
+class Mail extends PHPMailer
 {
-    public $To;
-    public $From;
-    public $Subject;
-    public $Body;
-    public $ReplyTo;
-    public $Cc;
-    public $Bcc;
-
-
-
     public function __construct()
     {
+        parent::__construct(true);
+        try{
+            $this->SMTPDebug = SMTP::DEBUG_SERVER;
+            $this->isSMTP();
+            $this->Host = env('SMTP_HOST');
+            $this->SMTPAuth = true;
+            $this->Username = env('SMTP_USERNAME');
+            $this->Password = env('SMTP_PASSWORD');
+            $this->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+            $this->Port = (int)env('SMTP_PORT');
+            $this->setFrom(env('DEFAULT_SENDER'), env('DEFAULT_SENDER_NAME'));
+        } catch(Exception $e){
+            echo "Message could not be sent. Mailer Error: {$this->ErrorInfo}";
+        }
+    }
+
+    public function Recipients(array $recipients)
+    {
+        if(empty($recipients))
+        {
+            throw new PHPMailerException('The Recipients must have at least one person');
+        }
+
+        foreach($recipients as $key => $value)
+        {
+            $this->addAddress($key, $value);
+        }
         
     }
 
-    public function send(bool $is_html = false) {
-
-        // To send HTML mail, the Content-type header must be set
-        if ($is_html) {
-            $headers[] = 'MIME-Version: 1.0';
-            $headers[] = 'Content-type: text/html; charset=utf-8';
-        }else {
-            $headers[] = 'Content-type: text/plain; charset=utf-8';
-        }
-
-        // Additional headers
-        $headers[] = 'To: '.$this->To;
-        $headers[] = 'From: '.$this->Form;
-        !empty($this->Cc) ? $headers[] = 'Cc: '.$this->Cc : null;
-        !empty($this->Bcc) ? $headers[] = 'Bcc: '.$this->Bcc: null;
-        try {
-            return mail($this->To, $this->Subject, $this->Body, implode("\r\n", $headers));
+    public function send()
+    {
+        try{
+            return parent::send();
         } catch(Exception $e){
-            // return error_get_last()['message'];
+            $message = "Message could not be sent. Mailer Error: {$this->ErrorInfo}";
+            return response()->json([
+                'status' => 419,
+                'message' => response()->http($message, 418, true)
+            ]);
         }
-    } 
+    }
 }

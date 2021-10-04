@@ -34,7 +34,11 @@ class Session
      * Destroys all the session data registered on session set
      * @return void
      */
-    public function end($url) {
+    public function end($url = '') {
+        if(empty(trim($url)))
+        {
+            $url = url();
+        }
         session_unset();
         session_destroy();
         $this->redirect($url);
@@ -96,7 +100,7 @@ class Session
         }
     }
     
-        /**
+    /**
      * Extract the value of a key from the session and then delete the key.
      *
      * @param string $key The  key to get its value
@@ -111,6 +115,16 @@ class Session
         }
 
         return $value;
+    }
+
+    /**
+     * Get all set variables in a session
+     *
+     * @return object
+     */
+    public function all()
+    {
+        return (object)$_SESSION;
     }
 
 }
