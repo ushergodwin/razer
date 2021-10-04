@@ -24,6 +24,7 @@ class HttpResponse
      *
      * @param string $response The response message
      * @param integer $status 200, 418, 419, 420
+     * @param bool $return Return a string response instead of echo
      * 
      * 200 - Success
      * 
@@ -35,7 +36,13 @@ class HttpResponse
      * 
      * @return void
      */
-    public function HttpResponse(string $response, int $status = 200) {
+    public function http(string $response, int $status = 200, bool $return = false)
+     {
+        if($return)
+        {
+            return $this->rowHttp($response, $status);
+        }
+
         switch($status){
             case 418:
                 echo $this->info($response);
@@ -57,7 +64,7 @@ class HttpResponse
      * @param array $response response
      * @return void
      */
-    public function JsonResponse(array $response, bool $echo = true) {
+    public function json(array $response, bool $echo = true) {
         if (!$echo)
             return json_encode($response);
         echo json_encode($response);
@@ -97,8 +104,8 @@ class HttpResponse
      * @return void
      */
     public function redirect($url) {
-        header("location:".$url);
-        exit();
+        $url = url($url);
+        return header("location:".$url);
     }
 
 
@@ -118,7 +125,7 @@ class HttpResponse
      * 
      * @return string Use this response later in your code
      */
-    public function RowHttpResponse(string $response, int $status = 200) {
+    private function rowHttp(string $response, int $status = 200) {
         switch($status){
             case 418:
                 $response = $this->info($response);
@@ -134,5 +141,10 @@ class HttpResponse
         }
 
         return $response;
+    }
+
+    public function BadRequest() {
+        header("HTTP/1.0 403 Bad Request");
+        exit("<div align='center'><a href='/'><img src='".url('403.jpg')."'/> </div></a> ");
     }
 }

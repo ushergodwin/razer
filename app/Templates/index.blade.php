@@ -22,7 +22,7 @@
         <![endif]-->
         <div class="container-fluid mt-3">
             {!! $alert !!} <br/>
-            <a href="{{baseUrl('test')}}">Go here</a>
+            <a href="{{url('test')}}">Go here</a>
         
             {!! @csrf !!}
         </div>

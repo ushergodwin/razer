@@ -9,6 +9,7 @@
 		"larapack/dd": "^1.1",
 		"league/booboo": "^2.2",
 		"opis/closure": "^3.6",
+		"phpmailer/phpmailer": "^6.5",
 		"vlucas/phpdotenv": "^5.3"
 	},
 	"license": "MIT",

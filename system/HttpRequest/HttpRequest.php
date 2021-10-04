@@ -1,6 +1,7 @@
 <?php
 namespace System\HttpRequest;
-use FFI\Exception;
+
+use Exception;
 class HttpRequest {
 
 
@@ -43,13 +44,13 @@ class HttpRequest {
      * @return string Data
      */
     public function post(string $key, string $default='') {
-        if (isset($_POST[$key]) and !isset($_POST['phaser_csrf'])) {
-            throw new Exception("The request can not be proccessed because it's missing the CRSF token. use the Phaser crsf constant to generate the token for POST requests");
-        }
-    
-        if ($_POST['phaser_crsf'] !== $_SESSION['crsf']) {
-            throw new Exception("The request can not be proccessed because it has an invalid CRSF token.");
-        }
+        // if (isset($_POST[$key]) and !isset($_POST['_token'])) {
+        //     throw new Exception("The request can not be proccessed because it's missing the CSRF token. use the Phaser crsf constant to generate the token for POST requests");
+        // }
+        // echo $_POST['_token'] . " <br/>" . $_SESSION['token'];
+        // if ($_POST['_token'] !== $_SESSION['token']) {
+        //     throw new Exception("The request can not be proccessed because it has an invalid CSRF token.");
+        // }
         $key = trim($key);
 
         if (isset($_POST[$key]))
@@ -67,7 +68,7 @@ class HttpRequest {
     public function get(string $key, string $default='') {
 
         $string = trim($key);
-        if (isset($_POST[$string]))
+        if (isset($_REQUEST[$string]))
             return filter_var(strip_tags($_GET[$string]), FILTER_SANITIZE_STRING);
     
         return $default;
@@ -91,18 +92,11 @@ class HttpRequest {
      *
      * @return array Data
      */
-    public function requestAsArray() {
-        $data = array();
+    public function all() {
         if ($this->isPost()) {
-            foreach ($_POST as $key => $value) {
-                $data[] = [$key => $value];
-            }
-            return $data;
+          return $_POST;
         }
-        foreach ($_GET as $key => $value) {
-            $data[] = [$key => $value];
-        }
-        return $data;
+        return $_GET;
     }
 
     /**
@@ -124,4 +118,25 @@ class HttpRequest {
     function xss_clean(string $string) {
         return strip_tags($string);
     }
+
+    /**
+     * Check if a key exists in the request
+     * @param string $key
+     * @return bool
+     */
+    public function has(string $key) {
+
+        return (isset($_REQUEST[$key]));
+    }
+
+    /**
+     * Check if a key does not exists in the request
+     * @param string $key
+     * @return bool
+     */
+    public function missing(string $key) {
+
+        return (!isset($_REQUEST[$key]));
+    }
+
 }

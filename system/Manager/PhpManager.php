@@ -1,6 +1,6 @@
 <?php
 namespace System\Manager;
-use FFI\Exception;
+use Exception;
 use System\Cookies\Cookies;
 use System\File\File;
 use System\Filters\Filters;
@@ -11,6 +11,7 @@ use System\Password\Password;
 use System\Session\Session;
 use System\Uuid\Uuid;
 use stdClass;
+use System\Server\Server;
 
 /**
  * Class PhpManager
@@ -70,6 +71,8 @@ class PhpManager
         $this->mail = new Mail();
 
         $this->filter = new Filters();
+
+        $this->server = new Server();
     }
 
     function remove_none_utf_char($string) {

@@ -1,8 +1,8 @@
 <?php
 namespace App\Models;
-use System\Models\BaseModel;
+use System\Models\Model;
 
-class Model extends BaseModel {
+class testModel extends Model {
 
     public function __construct()
     {

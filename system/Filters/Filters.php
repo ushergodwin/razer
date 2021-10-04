@@ -107,12 +107,13 @@ class Filters
      * @param array $variable An array of variables to check
      * @return bool false if all parsed variables are empty and True otherwise if not empty
      */
-    public function isNotEmpty(array $variable){
-        $feed = true;
+    public function isEmpty(array $variable){
+        $feed = false;
+        $variable = array_values($variable);
         $len = count($variable);
         for ($i = 0; $i < $len; $i++) {
             if (empty(trim($variable[$i]))) {
-                $feed = false;
+                $feed = true;
                 break;
             }
         }
