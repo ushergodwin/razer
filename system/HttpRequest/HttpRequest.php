@@ -7,7 +7,13 @@ class HttpRequest {
 
     public function __construct()
     {
-        
+        if(isset($_REQUEST))
+        {
+            foreach($_REQUEST as $key => $v)
+            {
+                $this->__set($key, $v);
+            }
+        }
     }
 
       /**
@@ -137,6 +143,17 @@ class HttpRequest {
     public function missing(string $key) {
 
         return (!isset($_REQUEST[$key]));
+    }
+
+
+    public function __set($name, $value)
+    {
+        $this->{$name} = $value;
+    }
+
+    public function __get($name)
+    {
+        return $this->{$name};
     }
 
 }

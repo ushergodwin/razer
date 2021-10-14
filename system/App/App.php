@@ -13,6 +13,8 @@ define("SYSTEM_PATH", "system/");
 
 define("APP_PATH", "app/");
 
+define("APP_NAME", env('APP_NAME'));
+
 include_once($_SERVER['DOCUMENT_ROOT'] . "/". APP_PATH."Routes/routes.php");
 
 
