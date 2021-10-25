@@ -1,20 +1,26 @@
 # BOOSTED MIGRATIONS MANAGER
 - A FEW THINGS TO KNOW ABOUT THE BOOSTED MIGRATIONS MANAGER
-- All migrations files should be stored under database/migrations directory. These are sql files that you export before submitting your changes.
-
-# MIGRATE MIGRATIONS
-- Run all migrations `php manage.php -migrate`
-- Migrate a specific migration `php manage.php -m migration_name` (The migration name can be either the whole name of  the file or its unique id between the database name and the timestamp)
-- Group Migrations `php manage.php -m group` Sometimes migration files may pile up, use this command to group them into a single file. All the existing migration files will be cleared.
-- Clear Migrations `php manage.php -m clear` If you want to clear all migration, use this command. Warning: This command clears all migrations in the database.
+- All migrations files should be stored under database/migrations directory
 
 # MAKE MIGRATIONS
-- Make migrations for the entire database `php manage.php -export`
-- Make migrations for a specific table `php manage.php -e table_name` This command will require you to specify if the supplied table name is database name or table name single single migrations are reserved for databases not in use.
-- Make migrations for multiple tables `php manage.php -e table1,table3,table3...` Separate table names with commas without spaces between the table names.
+## The migration names should follow the create_migration_name_table format
+- Eg create_users_table. The table names should be in plural form.
+- `php manage make:migration create_users_table`
+The created migration file will reside unde database/migartions folder
+# RUN MIGRATIONS
+- Run migrations `php manage migrate`
+- Run a specific migration file `php manage migrate --file=migration_file_name`
+- Group Migrations into 1 sql file  `php manage migrate:group`    
+- Run grouped migration           `php mange migrate:group --run`
+- Run Migartion modifications     `php manage migrate:modifiy`
+- List Migrations                 `php manage migrate:list`
+- Drop Migrations:                `php manage migrate:rollback` (This will drop all the migrations in the database)
+- Drop and re-run migrations      `php manage migrate:refresh`
+- Show Migration logs/errors     `php manage migrate:log`
+- Clear Migration logs/errors     `php manage migrate:log --clear`
 
 # For help
-- `php manage.php -help`
+- `php manage --help` or `php manage -h`
 
 # BMM version
-- `php manage.php -version`
+- `php manage --version` or `php manage -v`

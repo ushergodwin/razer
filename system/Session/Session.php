@@ -7,10 +7,6 @@ namespace System\Session;
  */
 class Session
 {
-    public function __construct()
-    {
-
-    }
 
     /**
      * @param string $url
@@ -29,20 +25,20 @@ class Session
         return session_start();
     }
 
+
     /**
      * @param string $url The location where to redirect a user after ending the session
      * Destroys all the session data registered on session set
      * @return void
      */
     public function end($url = '') {
-        if(empty(trim($url)))
-        {
-            $url = url();
-        }
+        $url = empty($url) ? url() : $url;
         session_unset();
         session_destroy();
         $this->redirect($url);
     }
+
+
     /**
      * @param array $session An array of session key and value to register
      * @return void successful registration of the session
@@ -52,6 +48,8 @@ class Session
             $_SESSION[$key] = $value;
         }
     }
+
+
     /**
      * @param string $session_name The name of the registered session
      * @param string|callable $default  The default value|function to return|call
@@ -67,6 +65,7 @@ class Session
         return $_SESSION[$session_name];
     }
     
+
     /**
      * Checks if the key exists in session
      *
@@ -81,6 +80,7 @@ class Session
         return isset($_SESSION[$key]);
     }
 
+
     /**
      * Unset the session variable | Variables
      *
@@ -88,7 +88,7 @@ class Session
      * Or an array of session variables to unset
      * @return void
      */
-    public function unSet($session_name) {
+    public function unset($session_name) {
 
         if (is_array($session_name)) {
             $array_len = count($session_name);
@@ -100,6 +100,7 @@ class Session
         }
     }
     
+
     /**
      * Extract the value of a key from the session and then delete the key.
      *
@@ -117,6 +118,7 @@ class Session
         return $value;
     }
 
+    
     /**
      * Get all set variables in a session
      *

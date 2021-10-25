@@ -228,9 +228,6 @@ class DatabaseManager extends QueryBuilder
                 $this->executeOne($stmt);
                 return;
             }
-            
-            echo $this->query;
-            
             $stmt = $this->bindQueryData($this->query, $this->queryData);
             $this->execute($stmt);
             return $this->result();
@@ -573,6 +570,19 @@ class DatabaseManager extends QueryBuilder
         }
         $this->is_row = true;
         return empty($this->get());
+    }
+
+    /**
+     * Get a single resource from the database as a result of joining 2 models
+     *
+     * @param int|string $id
+     * @param string $column defaults to id
+     * @return object
+     */
+    public function find($id, string $column = 'id')
+    {
+        $this->is_row = true;
+        return $this->where($column, $id)->get();
     }
 
     public function __call($name, $arguments)

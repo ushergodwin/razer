@@ -37,12 +37,22 @@ class Grammer
     {
         $word_len = strlen($word);
         $last__three_letters = substr($word, $word_len - 3, 3);
+        $last_letter = substr($word, $word_len - 1, 1);
 
         if(strtolower($last__three_letters) === 'ies')
         {
             return substr($word, 0, strlen($word) - 3) . 'y';
         }
+        if(strtolower($last_letter) === 's')
+        {
+            $word = substr($word, 0, strlen($word) - 1);
+        }
+        return $word;
+    }
 
-        return substr($word, 0, strlen($word) - 1);
+    public static function decamelize(string $camelCase)
+    {
+      $camel=preg_replace('/(?!^)[[:upper:]][[:lower:]]/', '$0', preg_replace('/(?!^)[[:upper:]]+/', "_".'$0', $camelCase));
+      return Grammer::plural(strtolower($camel));
     }
 }

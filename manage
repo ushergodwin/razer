@@ -1,0 +1,132 @@
+#!/usr/bin/env php
+<?php
+
+use System\Controller\Make;
+use System\Database\Grammer\Grammer;
+use System\Database\Migrations\Migrations;
+
+require_once __DIR__. '/system/Database/Migrations/Migrations.php';
+
+Migrations::__init__(__DIR__);
+
+//command line arguments
+
+$options = $argv;
+
+ if(!empty($options)) {
+    switch ($options[1]) {
+        case ($options[1] === '--version' || $options[1] === "-v"):
+            echo "\e[0;32;40mv".Migrations::$version . "\e[0m";
+            break;
+        
+        case ($options[1] === '--help' || $options[1] === "-h"):
+            $f = './system/Database/Migrations/cli-help.txt';
+            $read = file_get_contents($f);
+            echo "\e[0;32;40m$read \e[0m";
+            break;
+
+            
+        case ($options[1] === '--info' || $options[1] === "-i"):
+            Migrations::README();
+            break;
+
+        case 'migrate':
+            if(isset($options[2]))
+            {
+                $file = explode('=', $options[2]);
+                Migrations::config([], true);
+                Migrations::RunAll(false, [], [$file[1]]);
+                return;
+            }
+            Migrations::RunAll();
+            break;
+
+        case 'make:migration': 
+            Migrations::config(["table" => $options[2]]);
+            Migrations::makeMigration();
+            break;
+
+        case 'migrate:refresh':
+            Migrations::rollBack(true);
+            break;
+
+        case 'migrate:rollback':
+            Migrations::rollBack();
+            break;
+
+        case 'migrate:group':
+            if(isset($options[2]))
+            {
+                switch (strtolower($options[2])) {
+                    case '--run':
+                        Migrations::RunGroupedMigrations();
+                        break;
+                }
+                return;
+            }
+            Migrations::groupMigrations();
+            break;
+
+        case 'migrate:list':
+            Migrations::listMigrations();
+            break;
+
+        case 'migrate:modify':
+            Migrations::modifyMigrations();
+            break;
+
+        case 'migrate:logs': 
+            if(isset($options[2]))
+            {
+                switch(strtolower($options[2]))
+                {
+                    case '--clear': 
+                        Migrations::clearMigrationErrors();
+                        break;
+                }
+
+                return;
+            }
+            Migrations::showMigrationErrors();
+            break;
+
+        case 'cache:clear': 
+            echo "\e[0;33;40mClearing cache...\e[0m " . "\n";
+            foreach(glob('system/Template/cache/' . '*') as $file) {
+                unlink($file);
+            }
+            echo "\e[0;32;40mCache cleared. \e[0m\n";
+            break;
+
+        case 'make:controller':
+            Make::$path = getcwd();
+            if(!isset($options[3]))
+            {
+                Make::controller($options[2]);
+            }
+            if(isset($options[3]) && strtolower($options[3]) == '--resource')
+            {
+                Make::resourceController($options[2]);
+            }
+            break;
+
+        case 'make:model': 
+            Make::$path = getcwd();
+            if(!isset($options[3]))
+            {
+                Make::model($options[2]);
+            }
+            if(isset($options[3]) && strtoupper($options[2]) == '-M')
+            {
+                Make::model($options[3]);
+                $table = "create_". Grammer::decamelize($options[3]) . "_table";
+                Migrations::config(["table" => $table]);
+                Migrations::makeMigration();
+
+            }
+            break;
+            
+        default:
+            echo "\e[0;33;40mSorry, I do not understand what you mean\n Use \e[0m\e[0;32;40mphp manage -h for help \e[0m";
+    }
+}
