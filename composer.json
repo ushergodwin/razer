@@ -6,6 +6,7 @@
 	"require": {
 		"php": ">= 7.4",
 		"ext-pdo": "*",
+		"jenssegers/blade": "^1.4",
 		"larapack/dd": "^1.1",
 		"league/booboo": "^2.2",
 		"opis/closure": "^3.6",
@@ -21,7 +22,7 @@
 	],
 	"autoload": {
         "files": [
-			"system/functions.php"
+			"system/helpers.php"
 		],
 		"psr-4": {
 			"System\\": "system/",

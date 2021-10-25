@@ -12,7 +12,7 @@ class Model extends Eloquent
     public function __construct($massive_data = [])
     {
         $table_name = explode("\\", strtolower(get_called_class()));
-        $this->table = $table_name[(count($table_name) - 1)];
+        $this->table = self::decamelize($table_name[(count($table_name) - 1)]);
         $this->massive_data = $massive_data;
     }
 

@@ -1,19 +1,6 @@
 <IfModule mod_rewrite.c>
-Options +FollowSymlinks
-RewriteEngine On
-#Redirecting to www version of the website
-#RewriteCond %{HTTP_HOST} ^bluefaces\.tech [NC]
-#RewriteRule ^(.*)$ https://www.bluefaces.tech/$1 [L,R=301]
-# Explicitly disable rewriting for front controllers
-RewriteRule ^(assets|media)($|/) - [L]
-RewriteRule ^/index.php - [L]
-#RewriteRule ^/index.php - [L]
-
-RewriteCond %{REQUEST_FILENAME} !-f
-
-# Change below before deploying to production
-#RewriteRule ^(.*)$ /index.php [QSA,L]
-RewriteRule ^(.*)$ /index.php [QSA,L]
-
-php_value max_execution_time 1000
+    RewriteEngine on
+    # Redirect requests to public
+    RewriteRule  ^$ public/    [L]
+    RewriteRule  (.*) public/$1 [L]
 </IfModule>

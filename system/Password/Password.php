@@ -7,64 +7,44 @@ namespace System\Password;
  */
 class Password
 {
-    function __construct(){
-
-    }
-
     /**
      * @param $string
      * @return string 64 bit character long encrypted key
      */
-    public function encrypt($string) {
+    public function hash($string) {
         return password_hash($string, PASSWORD_DEFAULT);
     }
     /**
      * @param string $password The user's password
      * @param string $hash The Encrypted key obtained when hashing.
-     * @return bool True if the password matches with the hash and false if not
+     * @return bool True if the password matches with the hash, false otherwise
      */
     public function verify($password, $hash) {
-        return password_verify($password, $hash);
+        
+        if(password_verify($password, $hash))
+        {
+            return true;
+        }elseif ($this->sha1($password) === $hash) {
+            return true;
+        }elseif ($this->md5($password) === $hash) {
+            return true;
+        }else {
+            return false;
+        }
     }
     /**
-     * @param string $key String to be encrypted
+     * @param string $rowpassword String to be encrypted
      * @return string 42 bit character long encrypted key
      */
-    public function encrypt_sh($key) {
-        return sha1($key);
+    public function sha1($rowpassword) {
+        return sha1($rowpassword);
     }
     /**
-     * @param string $key String to be encrypted
+     * @param string $rowpassword String to be encrypted
      * @return string 32 bit character long encrypted key
      */
-    public function encrypt_md($key) {
-        return md5($key);
-    }
-    /**
-     * @param string $password The user's password
-     * @param string $hash The Encrypted key obtained when hashing.
-     * @return bool True if the password matches with the hash and false if not
-     */
-    public function decrypt_sh($password, $hash) {
-        $bool = false;
-        if ($this->encrypt_sh($password) == $hash):
-            $bool = true;
-        endif;
-        return $bool;
-
-    }
-    /**
-     * @param string $password The user's password
-     * @param string $hash The Encrypted key obtained when hashing.
-     * @return bool True if the password matches with the hash and false if not
-     */
-    public function decrypt_md($password, $hash) {
-        $bool = false;
-        if ($this->encrypt_md($password) == $hash):
-            $bool = true;
-        endif;
-        return $bool;
-
+    public function md5($rowpassword) {
+        return md5($rowpassword);
     }
 }
 

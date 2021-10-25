@@ -1,21 +1,23 @@
 <?php
 namespace System\App;
+session_start();
+define("BASE_PATH", $_SERVER['DOCUMENT_ROOT']."/");
+define("VERSION", '1.0.0');
 include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/autoload.php';
 
-strtolower(env("AUTO_START_SESSION")) === "true" ? session_start() : NULL;
 strtolower(env("ERROR_REPORTING")) === "true" ? ini_set('display_errors', 1) : ini_set('display_errors', 0);
 
-use System\Controller\Route;
-use System\HttpRequest\HttpRequest;
+use System\Routes\Route;
+use System\Http\Request;
 
 
-define("SYSTEM_PATH", "system/");
+define("SYSTEM_PATH", $_SERVER['DOCUMENT_ROOT']."/system/");
 
-define("APP_PATH", "app/");
+define("APP_PATH", $_SERVER['DOCUMENT_ROOT']."/app/");
 
 define("APP_NAME", env('APP_NAME'));
 
-include_once($_SERVER['DOCUMENT_ROOT'] . "/". APP_PATH."Routes/routes.php");
+include_once(APP_PATH."/Routes/routes.php");
 
 
 class App 
@@ -33,19 +35,26 @@ class App
 
     private function __init__() {
         $routes = Route::$routes;
-
+        //re order routes such that dynamic ones come last
+        foreach($routes as $key => $value)
+        {
+            if(preg_match('/\b(\w*any\w*)\b/', $key, $matches) === 1)
+            {
+                unset($routes[$key]);
+                $routes[$key] = $value;
+            }
+        }
         $uri = $_SERVER['REQUEST_URI'];
-
         //Simple routes.
         if (isset($_GET))
-            $uri = "/" . explode("?", $uri)[0];
+            $uri = explode("?", $uri)[0];
 
         $uri_exploded = explode("/", $uri);
-            //The function is expected to have arguments
-
+        $uri_exploded_len = count($uri_exploded);
+        //The function is expected to have arguments
         $args = [];
-        for ($i = 1; $i < count($uri_exploded); $i++) {
-            if (strlen($uri_exploded[$i]) <= 1)
+        for ($i = 1; $i < $uri_exploded_len; $i++) {
+            if (strlen($uri_exploded[$i]) < 1)
                 //For urls that end in slashes, we truncate the last space and match the uri to the perfect route
                 //Eg, ./some/ and ./some are the same. There we treat both as the same
                 continue;
@@ -65,7 +74,6 @@ class App
 
     private function map_uri_to_method($routes, $args, $args_array)
     {
-        
         foreach ($routes as $route => $val) {
             $is_args_supplied = false;
             $dynamic_route = explode("/", $route);
@@ -82,7 +90,7 @@ class App
                 if ($route == $args) {
                     if (is_callable($val)) {
                         
-                        call_user_func_array($val, [new HttpRequest]);
+                        call_user_func_array($val, [new Request]);
                         return;
                     }else {
                         $val_route = explode("::", $val);
@@ -93,7 +101,7 @@ class App
                     
                     $class = New $class_ucfirst;
                     if ($_SERVER['REQUEST_METHOD'] == "POST"){
-                      call_user_func_array(array($class, $val_route[1]), [new HttpRequest]);
+                      call_user_func_array(array($class, $val_route[1]), [new Request]);
                         return;
                     }
                     call_user_func(array($class, $val_route[1]));
@@ -102,20 +110,16 @@ class App
                 } else
                     continue;
             } else {
-                //$string = implode("/", $dynamic_route);
-                //echo $string."<br>";
-                //Testing
-                //$a = implode("/", $args_array);
-                //echo "<br>".$a. "-".$string;
-                //Lets match array argument count in string uri and the loop supplied route
-    
+
                 //Reverse array order to get arguments first
                 $dynamic_route_reversed = array_reverse($dynamic_route, false);
                 $args_array_reversed = array_reverse($args_array, false);
+                $argc_len = count($args_array_reversed);
+                $dynamic_len = count($dynamic_route_reversed);
                 $func_arguments = array(); //Arguments supplied from the url.
                 //In this case, we want to begin the array from the end to the first. We do not reserve array positions in this case
-                if(count($dynamic_route_reversed) == count($args_array_reversed)) {
-                    for ($i = 0; $i < count($dynamic_route_reversed); $i++)
+                if($dynamic_len === $argc_len) { 
+                    for ($i = 0; $i < $argc_len ; $i++)
                         if (strcmp($dynamic_route_reversed[$i], "(:any)") == 0) {
                             unset($dynamic_route_reversed[$i]);
                             if (isset($args_array_reversed[$i])) { //Lets store the arguments provided by the uri
@@ -124,6 +128,7 @@ class App
                             } else
                                 continue;
                         }
+                    $func_arguments = array_reverse($func_arguments);
                     //After reducing both arrays to the exact number of arguments, we convert the arrays back to strings and compare if they match
                     $args_array_reversed = implode("/", $args_array_reversed);
                     $dynamic_route_reversed = implode("/", $dynamic_route_reversed);
@@ -134,7 +139,7 @@ class App
                         $class_ucfirst = ucfirst($val_route[0]);
                         
                         $class = New  $class_ucfirst;
-                        call_user_func_array(array($class, $val_route[1]), array_reverse($func_arguments));
+                        call_user_func_array(array($class, $val_route[1]), $func_arguments);
                         return;
                     }
                 } else

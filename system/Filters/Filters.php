@@ -3,18 +3,12 @@ namespace System\Filters;
 
 class Filters
 {
-
-    public function __construct()
-    {
-        
-    }
-
        /**
      * Filter a string
      * @param $string
      * @return mixed
      */
-    public function filter_string($string) {
+    public function string($string) {
         return filter_var($string, FILTER_SANITIZE_STRING);
     }
 
@@ -23,7 +17,7 @@ class Filters
      * @param $string
      * @return mixed
      */
-    public function filter_email($string) {
+    public function email($string) {
         return filter_var($string, FILTER_SANITIZE_EMAIL);
     }
 
@@ -32,12 +26,8 @@ class Filters
      * @param $string
      * @return bool
      */
-    public function validate_email($string) {
-        $bool = false;
-        if (filter_var($string, FILTER_VALIDATE_EMAIL)):
-            $bool = true;
-        endif;
-        return $bool;
+    public function validateEmail($string) {
+        return filter_var($string, FILTER_VALIDATE_EMAIL);
     }
 
     /**
@@ -45,12 +35,8 @@ class Filters
      * @param $url
      * @return bool
      */
-    public function validate_url($url) {
-        $bool = false;
-        if(filter_var($url, FILTER_VALIDATE_URL)):
-            $bool = true;
-        endif;
-        return $bool;
+    public function validateUrl($url) {
+        return (filter_var($url, FILTER_VALIDATE_URL));
     }
 
     /**
@@ -60,11 +46,7 @@ class Filters
      * @return bool
      */
     public function compare($value1,  $value2) {
-        $bool = false;
-        if($value1 == $value2){
-            $bool = true;
-        }
-        return $bool;
+        return $value1 === $value2 ? true : false;
     }
 
     /**

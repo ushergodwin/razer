@@ -43,6 +43,10 @@ class QueryBuilder extends Transactions implements Query
 
     public function where(string $column, $value, string $operator = '=')
     {
+        if(strpos($column, '.') === false)
+        {
+            $column = $this->tableName . "." . $column;
+        }
         $this->is_where = true;
         $this->query .= " AND $column $operator ? ";
         $this->queryData[] = $value;
@@ -160,10 +164,10 @@ class QueryBuilder extends Transactions implements Query
         {
             if($this->is_where)
             {
-                $this->query .= " AND deleted_at IS NULL";
+                $this->query .= " AND {$this->tableName}.deleted_at IS NULL";
             }else {
                 $this->is_where = true;
-                $this->query .= " AND deleted_at IS NULL";
+                $this->query .= " AND {$this->tableName}.deleted_at IS NULL";
             }
         }
     }

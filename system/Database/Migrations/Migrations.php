@@ -2,12 +2,12 @@
 namespace System\Database\Migrations;
 
 use League\BooBoo\BooBoo;
-use League\BooBoo\Formatter\HtmlFormatter;
+use League\BooBoo\Formatter\CommandLineFormatter;
 require_once @getcwd() . '/vendor/autoload.php';
 date_default_timezone_set(env("TIMEZONE"));
 require_once @getcwd() .'/app/Config/database.php';
 //exception handling
-$booboo = new BooBoo([new HtmlFormatter()]);
+$booboo = new BooBoo([new CommandLineFormatter()]);
 
 $booboo->register(); // Registers the handlers
 
@@ -15,6 +15,7 @@ $db_config = (object) $config;
 
 use PDO;
 use PDOException;
+use System\Database\Grammer\Grammer;
 use System\Database\Schema\ColumnDefination;
 
 define('SERVER_NAME', $db_config->DB_HOST);
@@ -328,7 +329,7 @@ class Migrations extends ColumnDefination
         $tables = $stmt->fetchAll();
 
         if (empty($tables)) {
-            echo "\e[0;33;40mThere no migrations. Did you forget to run php manage.php migrate ? \e[0m\n";
+            echo "\e[0;33;40mThere no migrations. Did you forget to run php manage migrate? \e[0m\n";
             return;
         }
 

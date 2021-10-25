@@ -6,34 +6,29 @@ namespace System\Cookies;
  * 
  * All cookie global variable properties
  */
-class Cookies  {
+class Cookies  
+{
 
-    public $cookie;
-
-    function __construct()
-    {
-        //parent::__construct();
-        $this->cookie = (object)$this->get_cookie();
-    }
-
-    private function get_cookie() {
-        return $_COOKIE;
+    /**
+     * Cookie object
+     *
+     * @return object
+     */
+    public function get() {
+        return (object) $_COOKIE;
     }
 
 
     public function set($cookie_name, $cookie_data) {
-        setcookie($cookie_name, $cookie_data, time() + (86400 * 30 * 3), "/");
+        return setcookie($cookie_name, $cookie_data, time() + (86400 * 30 * 3), "/");
     }
 
 
 
-    public function read($cookie_name = false) {
-        if (isset($cookie_name))
+    public function read($cookie_name) {
             if (isset($_COOKIE[$cookie_name]))
                 return $_COOKIE[$cookie_name];
-            else
-                return false;
-        return $_COOKIE;
+        return false;
 
     }
 

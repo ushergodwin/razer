@@ -1,0 +1,44 @@
+########## Migrations Help Guide        ##########
+
+--------------------------------------------------------------------------------------
+Operation to perform                |   Command to execute
+--------------------------------------------------------------------------------------
+Make Migration:                     |   php manage make:migration create_migration_name
+--------------------------------------------------------------------------------------
+RunAll Migrations:                  |   php manage migrate
+---------------------------------------------------------------------------------------
+Migration a specific file:          |   php manage migrate --file=filename
+---------------------------------------------------------------------------------------
+Group Migrations into 1 sql file    |   php manage migrate:group
+----------------------------------------------------------------------------------------
+Run grouped migration:              |   php mange migrate:group --run
+----------------------------------------------------------------------------------------
+Run Migartion modifications         |   php manage migrate:modifiy
+-----------------------------------------------------------------------------------------
+List Migrations:                    |   php manage migrate:list
+-----------------------------------------------------------------------------------------
+Drop Migrations:                    |   php manage migrate:rollback
+-----------------------------------------------------------------------------------------
+Drop and re-run migrations:         |   php manage migrate:refresh
+------------------------------------------------------------------------------------------
+Show Migration logs/errors:         |   php manage migrate:log
+------------------------------------------------------------------------------------------
+Clear Migration logs/errors:        |   php manage migrate:log --clear
+------------------------------------------------------------------------------------------
+
+#########  Controller and Models        ##########
+------------------------------------------------------------------------------------------
+Make Controller:                    |   php manage make:controller ControllerName //in singular
+------------------------------------------------------------------------------------------
+Make a Resource Controller:         |   php manage make:controller ControllerName --resource
+------------------------------------------------------------------------------------------
+Make Model:                         |   php manage make:model ModelName // in singular
+------------------------------------------------------------------------------------------
+Make Model and its migration:       |   php manage make:model -M ModelName // in singular
+------------------------------------------------------------------------------------------
+
+#########  Template                      ##########
+------------------------------------------------------------------------------------------
+Clear Cache:                        |   php manage cache:clear
+------------------------------------------------------------------------------------------
+For more Info: php manage info 
