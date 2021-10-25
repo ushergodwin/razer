@@ -1,14 +1,18 @@
 <?php
 use League\BooBoo\BooBoo;
 use System\HttpResponse\HttpResponse;
-
-require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
+$root = $_SERVER['DOCUMENT_ROOT'];
+if(empty(trim($root)))
+{
+    $root = @getcwd();
+}
+require_once $root . '/vendor/autoload.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(dirname( __DIR__));
 $dotenv->safeLoad();
 
 //exception handling
-$booboo = new BooBoo([new League\BooBoo\Formatter\HtmlTableFormatter()]);
+$booboo = new BooBoo([new League\BooBoo\Formatter\HtmlFormatter()]);
 
 $booboo->register(); // Registers the handlers
 

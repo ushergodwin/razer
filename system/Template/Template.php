@@ -6,7 +6,7 @@ include_once $_SERVER['DOCUMENT_ROOT'].'/system/config/template.config.php';
 class Template {
 
 	static $blocks = array();
-	static $cache_path = 'cache/';
+	static $cache_path = 'system/Template/cache/';
 	static $cache_enabled;
 	static $templates_path;
 	static $template_extension;
@@ -23,10 +23,6 @@ class Template {
 
 	static function setTemplateCaching(bool $cache = FALSE) {
 		self::$cache_enabled = $cache;
-	}
-
-	static function cachePath(string $cache_path) {
-		self::$cache_path = $cache_path;
 	}
 	static function view($file, $data = array()) {
 		$cached_file = self::cache($file);

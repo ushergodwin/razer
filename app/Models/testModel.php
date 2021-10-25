@@ -1,5 +1,7 @@
 <?php
 namespace App\Models;
+
+use System\Database\DB;
 use System\Models\Model;
 
 class testModel extends Model {
@@ -10,17 +12,17 @@ class testModel extends Model {
     }
 
     public function allInterns() {
-        return self::table('interns')
+        return DB::table('interns')
             ->where(["email" => 'godwintumuhimbise96@gmail.com'], 'id DESC')
             ->get();
     }
 
     public function all() {
-        return self::table('staff')->get();
+        return DB::table('staff')->get();
     }
 
     public function oneIntern() {
-        return self::table('staff')
+        return DB::table('staff')
             ->row('fname, lname')
             ->where(["username" => 'mbonye'])
             ->get();
@@ -35,7 +37,7 @@ class testModel extends Model {
             "gender" => "Unknown"
         ];
 
-        return self::table('interns', $data)->save();
+        return DB::table('interns', $data)->save();
     }
 
     public function update() {
@@ -47,17 +49,17 @@ class testModel extends Model {
             "gender" => "Unknown"
         ];
 
-        return self::table('interns', $data)
+        return DB::table('interns', $data)
             ->where(["email" => "test@gmail.com"])
             ->save();
     }
 
     public function NumberOfRecords() {
-        return self::table('interns')->where(["email" => "test@gmail.com"])->exists('year_of_study');
+        return DB::table('interns')->where(["email" => "test@gmail.com"])->exists('year_of_study');
     }
 
     public function select() {
-        return self::table('interns')
+        return DB::table('interns')
                     ->use('internship')
                     ->select('first_name, last_name')
                     ->where(["id" => 9657])
@@ -66,23 +68,23 @@ class testModel extends Model {
     }
 
     public function distinct() {
-        return self::table('interns')->distinct('email, first_name')->get();
+        return DB::table('interns')->distinct('email, first_name')->get();
     }
 
     public function messages() {
-        return self::table('messages')->initJoin()
+        return DB::table('messages')->initJoin()
                               ->join('staff', 'messages.sent_from', 'staff.email')
                               ->get();
     }
 
     public function diffrentDB() {
-        return self::table('interns')->use('internship')
+        return DB::table('interns')->use('internship')
                                     ->between(["year_of_study" => [2,3]])
                                     ->get();
     }
 
     public function testLike() {
-        return self::table('interns')->use('internship')
+        return DB::table('interns')->use('internship')
                                     ->initLike()
                                     ->like(["email" => '%00%'])
                                     ->likeOr(["id" => '%38%'])

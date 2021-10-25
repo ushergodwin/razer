@@ -2,7 +2,8 @@
 
 use System\Template\Template;
 
-Template::templateExtension();
-Template::cachePath($_SERVER['DOCUMENT_ROOT'].'/app/Templates/cache/');
+Template::templateExtension(); //defaults to blade.php
+
 Template::templatesPath($_SERVER['DOCUMENT_ROOT'].'/app/Templates/');
+
 Template::setTemplateCaching(FALSE);

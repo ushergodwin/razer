@@ -1,29 +1,38 @@
 <?php
 namespace System\Database\Migrations;
-//date_default_timezone_set(env("TIMEZONE"));
-require_once @getcwd() .'/app/Config/migrations.config.php';
+
+use League\BooBoo\BooBoo;
+use League\BooBoo\Formatter\HtmlFormatter;
+require_once @getcwd() . '/vendor/autoload.php';
+date_default_timezone_set(env("TIMEZONE"));
+require_once @getcwd() .'/app/Config/database.php';
+//exception handling
+$booboo = new BooBoo([new HtmlFormatter()]);
+
+$booboo->register(); // Registers the handlers
 
 $db_config = (object) $config;
 
 use PDO;
 use PDOException;
+use System\Database\Schema\ColumnDefination;
 
+define('SERVER_NAME', $db_config->DB_HOST);
 
-define('SERVER_NAME', $db_config->SERVER_NAME);
+define('USER_NAME', $db_config->DB_USER);
 
-define('USER_NAME', $db_config->USER_NAME);
-
-define('PASSWORD', $db_config->PASSWORD);
+define('PASSWORD', $db_config->DB_PASSWORD);
 
 define('DATABASE_NAME', $db_config->DB_NAME);
 
 define('PORT', (int)$db_config->PORT);
-define('MIGRATIONS_DIR', $db_config->MIGRATIONS_DIR);
+
+define('MIGRATIONS_DIR', '/database/migrations/');
 
 /**
  * PHASER MIGRATIONS MANAGER
  */
-class Migrations
+class Migrations extends ColumnDefination
 {   
     private static $db;
 
@@ -31,18 +40,12 @@ class Migrations
 
     private static $dir;
 
-    private static $default_db;
-
     public static $version = '1.0';
 
-    private static $is_table;
+    private static $is_file;
 
     private static $server_version;
 
-    public function __construct()
-    {
-
-    }
 
     public function __destruct()
     {
@@ -66,81 +69,24 @@ class Migrations
         return $conn;
     }
 
+    public static function getMigrationInstance()
+    {
+        return self::connect();
+    }
+
     public static function __init__(string $path) {
         self::$dir = $path .MIGRATIONS_DIR;
         if (!file_exists(self::$dir)) {
-            echo "please create migrations path at ".self::$dir . " and try again. \n Exiting..";
-            exit;
+            $dir = getcwd() . '/database/';
+            mkdir($dir);
+            $dir = getcwd() . '/database/migrations/';
+            mkdir($dir);
         }
     }
 
-    public static function config(array $config, bool $default_db = true, bool $is_table = false) {
+    public static function config(array $config, bool $is_file = false) {
         self::$config = (object) $config;
-        self::$default_db = $default_db;
-        self::$is_table = $is_table;
-    }
-
-    /**
-     * Run migrations for a single file
-     *
-     * @return void
-     */
-    public static function RunSingle()
-    {
-        $file = self::$config->migration;
-
-        $migration_file = self::$dir;
-        
-        $scanned_files = scandir(self::$dir);
-        if (empty($scanned_files)) {
-            echo "The migrations file is not found. \n\nPlease make sure that the file exists under database/migrations/";
-            return;
-        }
-        $file_count = count($scanned_files);
-      
-        for ($f = 0; $f < $file_count; $f++) {
-
-            if (preg_match('/^.*\.(sql|json|csv|xml)$/i', $scanned_files[$f]) === 1) {
-                if (preg_match("/{$file}/i",$scanned_files[$f]) === 1) {
-                    $migration_file .= $scanned_files[$f];
-                    break;
-                }
-            }
-        }
-
-        if (!file_exists($migration_file) or $migration_file == self::$dir) {
-            echo "The migrations file is not found. \n\n Please make sure that the file exists under database/migrations/";
-            return;
-        }
-
-        if (self::checkMigrations($migration_file)) {
-            echo "Migration has already been run\r\n";
-            return;
-        }
-
-        $query = file_get_contents($migration_file);
-
-        self::$db = self::connect();
-
-        try {
-            echo "Running migrations...";
-
-            $stmt = self::$db->prepare($query);
-            $stmt->execute();
-
-            self::$db = null;
-
-            self::$db = self::connect();
-            $query2 = "INSERT INTO migrations (migration_name) VALUES (?)";
-            $stmt2 = self::$db->prepare($query2);
-            $stmt2->bindParam(1, $file);
-            $stmt2->execute();
-
-            echo "\r\n Migrated $file";
-        } catch (PDOException $e) {
-            echo "Migration failed ( ".$e->getMessage() .")";
-        }
-        echo "\r\n Migration complete.";
+        self::$is_file = $is_file;
     }
 
     /**
@@ -148,7 +94,7 @@ class Migrations
      *
      * @return void
      */
-    public static function RunAll() {
+    public static function RunGroupedMigrations() {
 
         self::$db = self::connect();
 
@@ -156,7 +102,7 @@ class Migrations
 
         $scanned_files = scandir(self::$dir);
         if (empty($scanned_files)) {
-            echo "The migrations file is not found. \n\n Please make sure that the file exists under database/migrations/";
+            echo "\e[0;33;40mNo grouped migrations found!\e[0m\n";
             return;
         }
 
@@ -171,54 +117,47 @@ class Migrations
 
         $all_files = count($migration_files);
 
-        if ($all_files === 1) {
-            echo "Switching to single migration \n";
+        echo "\e[0;33;40mRunning grouped migrations...\e[0m\n";
+        $migration_exists = 0;
 
-            self::config(array('migration' => $migration_files[0]));
-            self::RunSingle();
-            return;
-        }
-
-
-        echo "Running migrations...";
- 
         for ($i = 0; $i < $all_files; $i++) {
+            $migration_file_name = substr($migration_files[$i], 0, strlen($migration_files[$i]) - 4);
+            if (self::checkMigrations($migration_file_name))
+            {
+                $migration_exists += 1;
+                continue;
+            }
 
-            if (!self::checkMigrations(
-                substr($migration_files[$i], 0, strlen($migration_files[$i]) - 4)
-                )
-                ) {
+            try {
+                $query = file_get_contents(self::$dir.$migration_files[$i]);
 
-                    try {
-                        $query = file_get_contents(self::$dir.$migration_files[$i]);
+                $stmt = self::$db->prepare($query);
+                $stmt->execute();
+                if(self::storeMigration($migration_file_name))
+                {
+                    echo "\e[0;32;40mMigrated: \e[0m" . $migration_file_name;
+                }else {
+                    echo "\e[0;33;40mFailed to Migrate: \e[0m" . $migration_file_name;
+                }
 
-                        $stmt = self::$db->prepare($query);
-                        $stmt->execute();
-
-                        self::$db = null;
-
-                        self::$db = self::connect();
-                        $query2 = "INSERT INTO migrations (migration_name) VALUES (:migration_name)";
-                        $stmt2 = self::$db->prepare($query2);
-                        $stmt2->execute(['migration_name' => substr($migration_files[$i], 0, strlen($migration_files[$i]) - 4)]);
-
-                        echo "\r\n Migrated " . substr($migration_files[$i], 0, strlen($migration_files[$i]) - 4);
-                    }catch (PDOException $e) {
-                        echo $e->getMessage();
-                    }
-            } else {
-                echo "\r\n There no new migrations to run.";
-                return;
+            }catch (PDOException $e) {
+                self::logError($e->getMessage());
+                echo "\e[0;33;40mFailed to Migrate: \e[0m" . $migration_file_name . "\n";
+                echo "\e[0;33;40mRun migrate:logs to view error logs. \n";
             }
         }
-        echo "\r\nMigrations Complete.";
+        
+        if($migration_exists == $all_files)
+        {
+            echo "\e[0;33;40mNothing to migrate! \e[0m \n";
+        }
     }
 
-    private static function checkMigrations(string $name = '') {
 
+    private static function initMigrations() {
         $migrations_table = "CREATE TABLE migrations (
-            id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-            migration_name VARCHAR(100) NOT NULL,
+            id BIGINT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            migration VARCHAR(100) NOT NULL,
             migrated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             )";
 
@@ -228,59 +167,47 @@ class Migrations
         $stmt = self::$db->prepare($sql);
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->execute();
-
-
         if (empty($stmt->fetch())) {
-            self::$db = null;
-
-            self::$db = self::connect();
             try {
                 self::$db->exec($migrations_table);
-                self::$db = null;
-                return false;
+                echo "\e[0;32;40mInitialized Migrations successfully\e[0m \n";
             }catch (PDOException $e) {
-                echo $e->getMessage();
+                self::logError($e->getMessage());
+                echo "\e[0;33;40mFailed to Initialize migrations \e[0m\n";
+                echo "\e[0;33;40mRun migrate:logs to view error logs.\e[0m \n";
             }
 
-        }else {
-            $sql = "SELECT id FROM migrations WHERE migration_name = ?";
-
-            self::$db = self::connect();
-            try {
-                $stmt = self::$db->prepare($sql);
-                $stmt->bindParam(1, $name);
-                $stmt->setFetchMode(PDO::FETCH_ASSOC);
-                $stmt->execute();
-                if (empty($stmt->fetch())) {
-                    return false;
-                }
-                return true;
-            } catch (PDOException $e) {
-                echo $e->getMessage();
-            }
-            
         }
     }
 
-    public static function exportDataForMigration(bool $group=false) {
 
-        if (!$group) {
-            echo "Exporting...";
-        }else {
-            echo "Grouping Migrations...";
+
+    private static function checkMigrations(string $name = '') {
+        $sql = "SELECT id FROM migrations WHERE migration = ?";
+
+        try {
+            $stmt = self::$db->prepare($sql);
+            $stmt->bindParam(1, $name);
+            $stmt->setFetchMode(PDO::FETCH_ASSOC);
+            $stmt->execute();
+            if (empty($stmt->fetch())) {
+                return false;
+            }
+            return true;
+
+        } catch (PDOException $e) {
+            echo $e->getMessage();
         }
+    }
 
 
-        $table_name = self::$config->tables;
+
+    private static function exportDataForMigration() {
+
+        echo "\e[0;33;40mGrouping Migrations... \e[0m \n";
         $tables = array();
 
-        $file_name = DATABASE_NAME;
         self::$db = self::connect();
-        
-        if (!self::$default_db) {
-            self::$db->exec("USE ".$table_name[0]);
-            $file_name = $table_name[0];
-        }
 
         $stmt = self::$db->prepare("SHOW TABLES");
         $stmt->setFetchMode(PDO::FETCH_NUM);
@@ -297,10 +224,6 @@ class Migrations
             }
         }
         
-        if (count($table_name) > 1 or self::$is_table) {
-            $tables = array();
-            $tables = $table_name;
-        }
         $sql_script = "-- BOOSTED MIGRATIONS MANAGER SQL Dump\n-- version ". self::$version ."\n-- https://boostedtechs.com/
         \n-- Host: ".SERVER_NAME . "\n-- Generation Time ".date('M d, Y ')." at ".date('h:i:s A')."\n-- Server Version: ".self::$server_version. "\n-- PHP Version: ". phpversion()."\n\n".'SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";'."\n"."--\n-- Database: `".DATABASE_NAME ."`\n--\n\n-- ----------------------------------------------\n\n--\n";
        
@@ -320,14 +243,11 @@ class Migrations
             $stmt->execute();
             $result = $stmt->fetch();
             // Prepare SQL script for dumping data for each table
-            $keys = array();
    
             if (!empty($result)) {
                 $sql_script .= "--\n-- Dumping data for table `$table`-- \n\n";
                 $sql_script .= "INSERT INTO `$table` (";
-                foreach ($result as $key => $value) {
-                    $keys[] = $key;
-                }
+                $keys = array_keys($result);
                 $key_count = count($keys);
                 $columns = "";
                 for ($k = 0; $k < $key_count; $k++) {
@@ -358,58 +278,25 @@ class Migrations
                 $sql_script .= $values_sql . "\n";
             }
         }
-        $str_id = uniqid('', true);
-        $id = substr($str_id, 15, 23);
 
-        $file = self::$dir.$file_name.'_'.$id.'_'.date('Y-m-d-H-i-s').'.sql';
+
+        $file = self::$dir.date('Y_m_d_His').'_grouped_migrations.sql';
 
         $export = fopen($file, 'w+');
         fwrite($export, $sql_script);
         fclose($export);
-        $res = "\n Exported data to $file \n" ."Export complete ";
-        if ($group){
-            $res = "\n All Migrations grouped in $file \n" ."Grouping complete";
-        }
-        echo $res;
+
+        echo "\e[0;32;40mAll Migrations grouped\e[0m \n";
     }
 
     public static function clearMigrations() {
         self::$db = self::connect();
-        $stmt = self::$db->prepare("SHOW TABLES");
-        $stmt->setFetchMode(PDO::FETCH_NUM);
-        $stmt->execute();
-        $tables = array();
-        while ($row = $stmt->fetch()) {
-            $tables[] = $row[0];
-        }
-        if (empty($tables)) {
-            echo "There are no migrations to clear!";
-            return;
-        }
-
-        self::$db = null;
-
-        self::$db = self::connect();
-        echo "Clearing Migrations\n";
-        foreach ($tables as $table) {
-            try {
-                if ($table !== 'migrations') {
-                    $stmt = self::$db->prepare("DROP TABLE `$table`");
-                    $stmt->execute();
-                }
-            } catch(PDOException $e) {
-
-            }
-        }
-
         try {
             $stmt = self::$db->prepare("TRUNCATE TABLE `migrations`");
             $stmt->execute();
         } catch(PDOException $e) {
             
         }
-
-        echo "All Migrations cleared.\n";
     }
 
     /**
@@ -421,7 +308,7 @@ class Migrations
      */
     public static function groupMigrations() {
         $dir = self::$dir;
-        array_map('unlink', glob("{$dir}*.sql"));
+        array_map('unlink', glob("{$dir}*"));
         self::exportDataForMigration(true);
     }
 
@@ -431,39 +318,309 @@ class Migrations
         exec( $cmd );
     }
 
-    public static function dropMigration() {
-        echo "Dropping Migration... \n";
+    public static function listMigrations()
+    {
+        echo "\e[0;33;40mListing Migrations... \e[0m\n";
+        self::initMigrations();
         self::$db = self::connect();
-        $table = self::$config->table;
-        $sql = "DROP TABLE $table";
-        try {
-            self::$db->exec($sql);
-            echo "Migration dropped.";
-        } catch (PDOException $e) {
-            echo "Drop migration failed!";
-        }
-        
-    }
-
-    public static function listMigrations() {
-        echo "Listing Migrations... \n";
-        self::$db = self::connect();
-        $stmt = self::$db->prepare("SHOW TABLES");
-        $stmt->setFetchMode(PDO::FETCH_NUM);
+        $stmt = self::$db->prepare("SELECT * FROM migrations");
         $stmt->execute();
-        $tables = array();
-        while ($row = $stmt->fetch()) {
-            $tables[] = $row[0];
-        }
+        $tables = $stmt->fetchAll();
+
         if (empty($tables)) {
-            echo "There are no migrations in ". DATABASE_NAME . " database";
+            echo "\e[0;33;40mThere no migrations. Did you forget to run php manage.php migrate ? \e[0m\n";
             return;
         }
 
-        $table_count = count($tables);
-        for ($i = 0; $i < $table_count; $i++) {
-            echo $tables[$i] . "\n";
+        foreach($tables as $value) {
+            echo "\e[0;32;40m".$value['id']. ". ". $value['migration'] . ": ". $value['migrated_at']."\e[0m \n";
         }
+    }
+
+
+
+    public static function makeMigration()
+    {
+        $table = self::$config->table;
+        $scanned_files = scandir(self::$dir);
+        $file = $table . ".php";
+
+        foreach ($scanned_files as  $value) {
+            $mig_f = substr($value, 18, strlen($value) - 18);
+            if($mig_f === $file)
+            {
+                echo "\e[0;33;40mMigration already exists! \e[0m\n";
+                return;
+            }
+        }
+        $class = str_replace('_', ' ', $table);
+        $class = ucwords($class);
+        $class = preg_replace('/\s+/', '', $class);
+
+        $tableArray = explode('_', $table);
+        array_pop($tableArray);
+        array_shift($tableArray);
+        $tableName = '';
+
+        if (count($tableArray) === 1)
+        {
+            $tableName = $tableArray[0];
+
+        }else {
+            $tableName = implode('_', $tableArray);
+        }
+
+        $code = "<?php\n";
+        $code .= "use System\Database\Schema\BluePrint;\n";
+        $code .= "use System\Database\Schema\Schema;\n";
+        $code .= "\n\n class " . $class . "\n { \n";
+        $code .= "\t\t/**\n\t\t* Run the Migrations\n\t\t*\n\t\t* @return void\n\t\t*/ \n\t\t";
+        $code .= "public function up()\n\t\t{\n\n";
+        $code .= "\t\t\tSchema::create('" . $tableName . "', function (BluePrint $"."table) {\n\n";
+        $code .= "\t\t\t\t$" . "table->id();\n\t\t\t\t$"."table->timestamps(); \n\t\t\t}); \n\n\t\t} \n\n\t\t";
+        $code .= "/**\n\t\t* Modify Migrations\n\t\t*\n\t\t* @return void\n\t\t*/ \n\t\t";
+        $code .= "public function alter()\n\t\t{\n\n";
+        $code .= "\t\t\tSchema::modify('" . $tableName . "', function (BluePrint $"."table) {\n\n";
+        $code .= "\t\t\t\t" . " \n\t\t\t}); \n\n\t\t} \n\n\t\t";
+        $code .= "/**\n\t\t* Reverse the migrations.\n\t\t*\n\t\t* @return void\n\t\t*/\n\n\t\tpublic function down()\n\t\t{\n\n\t\t\tSchema::dropIfExists('" . $tableName . "');
+     \n\t\t} \n\n}";
+        $file_name = date('Y_m_d_His_').$table . ".php";
+        $file = fopen(self::$dir.$file_name, 'w+');
+        fwrite($file, $code);
+        fclose($file);
+        echo "\e[0;32;40mCreated Migration:\e[0m ".substr($file_name, 0, strlen($file_name) - 4);
+    }
+
+    private static function storeMigration(string $migrations_table_file)
+    {
+        self::$db = self::connect();
+        $stmt = self::$db->prepare("INSERT INTO migrations(`migration`) VALUES(?)");
+        $stmt->bindParam(1, $migrations_table_file);
+        try{
+            $stmt->execute();
+            return $stmt->rowCount() > 0;
+        }catch(PDOException $e)
+        {
+
+        }
+    }
+
+    public static function RunAll(bool $refresh = false, array $migration_classes = [],
+     array $migration_files = [])
+    {
+        self::$db = self::connect();
+
+        if(!$refresh)
+        {
+            self::initMigrations();
+
+            if(empty($migration_files))
+            {
+                $scanned_files = scandir(self::$dir);
+
+                $file_count = count($scanned_files);
+    
+    
+                for ($f = 0; $f < $file_count; $f++) {
+    
+                    if (preg_match('/^.*\.(php)$/i', $scanned_files[$f]) === 1) {
+                        $migration_files[] = $scanned_files[$f];
+                    }
+                }
+            }
+
+            $file_count = count($migration_files);
+        
+            for($i = 0; $i < $file_count; $i++){
+                $file = getcwd() . MIGRATIONS_DIR . $migration_files[$i];
+                if(self::$is_file)
+                {
+                    $file = $file . ".php";
+                }
+                $st = get_declared_classes();
+                include $file;
+
+                $migration_classes[] = array_values(array_diff_key(get_declared_classes(),$st))[0];
+            }
+        }
+
+        $migration_classes_count = count($migration_classes);
+        $migration_exists = 0;
+
+        for($i = 0; $i < $migration_classes_count; $i++){
+            $object = new $migration_classes[$i];
+            call_user_func([$object, 'up']);
+            
+            $migrations_table_file = substr($migration_files[$i], 0, strlen($migration_files[$i]) - 4);
+            if(self::$is_file) {
+                $migrations_table_file = $migration_files[$i];
+            }
+            try {
+                if(self::checkMigrations($migrations_table_file))
+                {
+                    $migration_exists += 1;
+                    continue;
+                }
+                // echo self::$migration . "\n\n";
+
+                echo "\e[0;33;40mMigrating: \e[0m";
+                echo $migrations_table_file . "\n";
+    
+                self::$db->exec(self::$migration);
+
+                echo "\e[0;32;40mMigrated: \e[0m ";
+                echo $migrations_table_file. "\n";
+
+                self::storeMigration($migrations_table_file);
+
+            } catch (PDOException $e) {
+                self::logError($e->getMessage());
+                echo "\e[0;33;40mFailed to Migrate: \e[0m" . $migrations_table_file . "\n";
+                echo "\e[0;33;40mRun migrate:logs to view error logs. \e[0m\n";
+            }
+        }
+
+        if($migration_exists == $migration_classes_count)
+        {
+            echo "\e[0;33;40mNothing to migrate! \e[0m";
+        }
+
+    }
+
+    public static function rollBack(bool $refresh = false)
+    {
+        self::$db = self::connect();
+        $migration_files = array();
+
+        $scanned_files = scandir(self::$dir);
+
+        $file_count = count($scanned_files);
+
+        $migration_classes = array();
+
+        for ($f = 0; $f < $file_count; $f++) {
+
+            if (preg_match('/^.*\.(php)$/i', $scanned_files[$f]) === 1) {
+                $migration_files[] = $scanned_files[$f];
+            }
+        }
+
+        $file_count = count($migration_files);
+        
+        $migration_files = array_reverse($migration_files);
+        for($i = 0; $i < $file_count; $i++){
+            $file = getcwd() . MIGRATIONS_DIR . $migration_files[$i];
+            
+            $st = get_declared_classes();
+            include $file;
+
+            $migration_classes[] = array_values(array_diff_key(get_declared_classes(),$st))[0];
+        }
+
+        $migration_classes_count = count($migration_classes);
+        
+        for($i = 0; $i < $migration_classes_count; $i++){
+            $object2 = new $migration_classes[$i];
+            call_user_func([$object2, 'down']);
+            try {
+                    echo "\e[0;33;40mRolling Back: \e[0m";
+                    echo substr($migration_files[$i], 0, strlen($migration_files[$i]) - 4) . "\n";
+
+                    if(!empty(self::$dropForeignkey)){
+                        foreach(self::$dropForeignkey as $sql){
+                            self::$db->exec($sql);
+                        }
+                    }
+
+                    self::$db->exec(self::$rollBackMigration);
+                    self::$dropForeignkey = array();
+                    self::$rollBackMigration = '';
+
+                    echo "\e[0;32;40mRolled Back: \e[0m ";
+                    echo substr($migration_files[$i], 0, strlen($migration_files[$i]) - 4) . "\n";
+
+            } catch (PDOException $e) {
+                self::logError($e->getMessage());
+                echo "\e[0;33;40mFailed to Rollback: \e[0m" . substr($migration_files[$i], 0, strlen($migration_files[$i]) - 4) . "\n";
+                echo "\e[0;33;40mRun migrate:logs to view error logs. \e[0m\n";
+            }
+
+            self::clearMigrations();
+        }
+
+        if($refresh){
+            $migration_classes = array_reverse($migration_classes);
+            $migration_files = array_reverse($migration_files);
+            self::clearMigrations();
+            self::RunAll(true, $migration_classes, $migration_files);
+        }
+
+    }
+
+
+    public static function modifyMigrations()
+    {
+        self::$db = self::connect();
+        $migration_files = array();
+
+        $scanned_files = scandir(self::$dir);
+
+        $file_count = count($scanned_files);
+
+        $migration_classes = array();
+
+        for ($f = 0; $f < $file_count; $f++) {
+
+            if (preg_match('/^.*\.(php)$/i', $scanned_files[$f]) === 1) {
+                $migration_files[] = $scanned_files[$f];
+            }
+        }
+
+        $file_count = count($migration_files);
+        
+        $migration_files = array_reverse($migration_files);
+        for($i = 0; $i < $file_count; $i++){
+            $file = getcwd() . MIGRATIONS_DIR . $migration_files[$i];
+            
+            $st = get_declared_classes();
+            include $file;
+
+            $migration_classes[] = array_values(array_diff_key(get_declared_classes(),$st))[0];
+        }
+
+        $migration_classes_count = count($migration_classes);
+        
+        for($i = 0; $i < $migration_classes_count; $i++){
+            $object2 = new $migration_classes[$i];
+            echo "\e[0;32;40mModifying: \e[0m";
+            echo substr($migration_files[$i], 0, strlen($migration_files[$i]) - 4) . "\n";
+            
+            call_user_func([$object2, 'alter']);
+
+        }
+
+    }
+
+    public static function showMigrationErrors()
+    {
+        $root = getcwd();
+
+        $f = fopen($root.'/database/logs/db-logs.txt', 'r');
+
+        $content = fread($f, filesize($root.'/database/logs/db-logs.txt'));
+        d($content);
+    }
+
+    public static function clearMigrationErrors()
+    {
+        echo "\e[0;33;40mClearing Migration logs... \e[0m\n";
+        $root = getcwd();
+
+        $f = fopen($root.'/database/logs/db-logs.txt', 'w+');
+        fwrite($f, '');
+        fclose($f);
+        echo "\e[0;32;40mMigration logs cleared. \e[0m\n";
+
     }
 }
 

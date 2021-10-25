@@ -2,96 +2,110 @@
 
 use System\Database\Migrations\Migrations;
 
-
 require_once __DIR__. '/system/Database/Migrations/Migrations.php';
 
 Migrations::__init__(__DIR__);
 
 //command line arguments
 
-$shortopts  = "";
-$shortopts .= "m:";  // Required value
-$shortopts .= "e:";
-$shortopts .= "t:";
-$shortopts .= "d:";
-$shortopts .= "b:";
-$shortopts .= "v::"; // Optional value
-$shortopts .= "h::";
-$shortopts .= "i::";
-$shortopts .= "export:";
-$shortopts .= "migrate:";
+$options = $argv;
 
-$longopts  = array(
-    "required:",     // Required value
-    "optional::",    // Optional value
-    "option",        // No value
-    "opt",           // No value
-);
+ if(!empty($options)) {
+    switch ($options[1]) {
+        case 'version':
+            echo "Boosted Migrations Manager v".Migrations::$version;
+            break;
+        
+        case 'help':
+            echo "
+            ########## Migrations Help Guide ##########
+            RunAll a Specific Migration:  php manage.php migrate:file migration_file_name
+            RunAll all Migrations:  php manage.php migrate
+            List all Migrations:  php manage.php migrate:list
+            Export migration for an entire database: php manage.phy export
+            Migration a specific table(s): php manage.php migrate:table table1 table2 tablen
+            Migration a different database: php manage.php migrate:db db_name
+            Drop Migration: php manage.php migrate:rollback
 
-$options = getopt($shortopts, $longopts);
+            ######### Template ########################
+            Clear Cache: php manage.php cache:clear
+            For more Info: php manage.php info ";
+            break;
 
-// print_r($options);
-// return;
- if(!empty($options['m'])) {
-    switch (strtolower($options['m'])) {
-        case 'igrate':
+            
+        case 'info':
+            Migrations::README();
+            break;
+
+        case 'migrate':
+            if(isset($options[2]))
+            {
+                $file = explode('=', $options[2]);
+                Migrations::config([], true);
+                Migrations::RunAll(false, [], [$file[1]]);
+                return;
+            }
             Migrations::RunAll();
             break;
-        case 'group':
-            Migrations::config(['tables' => [0 => $options['m']]]);
+
+        case 'make:migration': 
+            Migrations::config(["table" => $options[2]]);
+            Migrations::makeMigration();
+            break;
+
+        case 'migrate:refresh':
+            Migrations::rollBack(true);
+            break;
+
+        case 'migrate:rollback':
+            Migrations::rollBack();
+            break;
+
+        case 'migrate:group':
+            if(isset($options[2]))
+            {
+                switch (strtolower($options[2])) {
+                    case '--run':
+                        Migrations::RunGroupedMigrations();
+                        break;
+                }
+                return;
+            }
             Migrations::groupMigrations();
             break;
-        case 'clear':
-            echo 'You are attempting to clear all migrations, Continue? [y/n] ';
 
-            if (!in_array(trim(fgets(STDIN)), array('y', 'Y'))) {
-    
-                echo 'Operation terminated ' . "\n";
-                exit;
-            }
-            echo "Continuing\n";
-            Migrations::config(['tables' => [0 => $options['m']]]);
-            Migrations::clearMigrations();
-            break;
-        case 'list':
-            Migrations::config(['tables' => [0 => $options['m']]]);
+        case 'migrate:list':
             Migrations::listMigrations();
             break;
+
+        case 'migrate:modify':
+            Migrations::modifyMigrations();
+            break;
+
+        case 'migrate:logs': 
+            if(isset($options[2]))
+            {
+                switch(strtolower($options[2]))
+                {
+                    case '--clear': 
+                        Migrations::clearMigrationErrors();
+                        break;
+                }
+
+                return;
+            }
+            Migrations::showMigrationErrors();
+            break;
+
+        case 'cache:clear': 
+            echo "\e[0;33;40mClearing cache...\e[0m " . "\n";
+            foreach(glob('system/Template/cache/' . '*') as $file) {
+                unlink($file);
+            }
+            echo "\e[0;32;40mCache cleared. \e[0m\n";
+            break;
+        
         default:
-        Migrations::config(array('migration' => $options['m']));
-        Migrations::RunSingle();       
+            echo "\e[0;33;40mSorry, I did not understand what you mean \e[0m\n";
     }
- }elseif(!empty($options['h'])) {
-     echo "
-        ########## Migrations Help Guide ##########
-        Run a Specific Migration:  php manage.php -m migration_file_name
-        Run all Migrations:  php manage.php -migrate
-        List all Migrations:  php manage.php -m list
-        Make migration for an entire database: php manage.phy -export
-        Make migration for a specific table: php manage.php -t table_name
-        Make migration for multiple tables: php manage.php -e table1,table2,table2..
-        Make migration for a different database: php manage.php -b db_name
-        Drop Migration: php manage.php -d migration_name
-        For more Info: php manage.php -info ";
- } elseif(!empty($options['i'])) {
-     Migrations::README();
- }elseif(!empty($options['e'])) {
-     $args = explode(',', $options['e']);
-     Migrations::config(['tables' => $args]);
-     Migrations::exportDataForMigration();
- } elseif (!empty($options['v'])) {
-    
-    echo "Boosted Migrations Manager v".Migrations::$version;
- }  elseif (!empty($options['d'])) {
-     Migrations::config(["table" => $options['d']]);
-     Migrations::dropMigration();
- } elseif (!empty($options['t'])) {
-    Migrations::config(['tables' => [0 => $options['t']]], true, true);
-    Migrations::exportDataForMigration();
- } elseif (!empty($options['b'])) {
-    Migrations::config(['tables' => [0 => $options['b']]], true, true);
-    echo 'Attempting to use the provided database ' . "\n";
-    Migrations::exportDataForMigration();
- } else {
-     echo "Sorry, I did not understand what you mean ";
- }
+}
