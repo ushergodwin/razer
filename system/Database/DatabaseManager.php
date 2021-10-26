@@ -36,6 +36,11 @@ class DatabaseManager extends QueryBuilder
     public static function table(string $table)
     {
         $db = new self;
+        if(!empty(self::$newdbConnection))
+        {
+          $db->database = self::$newdbConnection;
+          $db->createNewConnection();  
+        }
         return $db->mainTable($table);
     }
 

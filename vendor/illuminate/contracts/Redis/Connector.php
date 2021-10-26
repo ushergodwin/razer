@@ -1,5 +1,4 @@
 <?php
-
 namespace Illuminate\Contracts\Redis;
 
 interface Connector

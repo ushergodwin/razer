@@ -18,6 +18,9 @@
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
         <div class="container-fluid mt-3">
+            <?php if($age > 20): ?>
+             <p>yes</p>
+             <?php endif; ?>
             <div class="alert alert-success fade show">
                 <strong>You have successfully installed the PHASER PHP Library v<?php echo e(VERSION); ?></strong>
             </div>
