@@ -23,6 +23,7 @@ class Connection
 {
     protected $database;
     protected $db;
+    protected static $newdbConnection;
     use DatabaseLogs;
     /**
      * Instantiate the Database Model
