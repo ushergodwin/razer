@@ -1,5 +1,5 @@
-# Phaser MTC
-- Phaser MTC is a PHP library that provides a convenient MTC (Model, Controller Template) structure for systems development.
+# Phaser MCV
+- Phaser MCV is a PHP library that provides a convenient MVC (Model, View Controller) structure for systems development.
 - Do you want something small but yet powerfull, this is your best choice
 # Databse operations
 ## Insert one / Many

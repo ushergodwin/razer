@@ -17,7 +17,7 @@ define("APP_PATH", $_SERVER['DOCUMENT_ROOT']."/app/");
 
 define("APP_NAME", env('APP_NAME'));
 
-include_once(APP_PATH."/Routes/routes.php");
+include_once(APP_PATH."/routes/routes.php");
 
 
 class App 

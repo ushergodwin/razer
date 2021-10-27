@@ -1,7 +1,7 @@
 <?php
 
-use System\Template\Template;
+use System\Views\Template;
 
 Template::templateExtension(); //defaults to blade.php
 
-Template::templatesPath(BASE_PATH.'/app/Templates/');
+Template::templatesPath(BASE_PATH.'/app/views/');

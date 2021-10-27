@@ -4,7 +4,7 @@ use System\Http\CRSF\CRSF;
 use System\Http\Redirect;
 use System\Http\Request;
 use System\Http\Response;
-use System\Template\Template;
+use System\Views\Template;
 
 $root = $_SERVER['DOCUMENT_ROOT'];
 if(empty(trim($root)))
