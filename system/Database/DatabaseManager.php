@@ -590,6 +590,17 @@ class DatabaseManager extends QueryBuilder
         return $this->where($column, $id)->get();
     }
 
+    /**
+     * Execute a database statment
+     *
+     * @param string $statement
+     * @return int|false
+     */
+    public static function exec(string $statement)
+    {
+        return (new self)->executeStatement($statement);
+    }
+
     public function __call($name, $arguments)
     {
         return $this->{$name(...$arguments)};

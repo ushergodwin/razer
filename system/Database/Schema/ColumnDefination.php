@@ -237,7 +237,7 @@ class ColumnDefination
      */
     public function timestamps()
     {
-        self::$migration .= "\n\t`created_at` DATETIME NULL DEFAULT NULL, ";
+        self::$migration .= "\n\t`created_at` DATETIME DEFAULT CURRENT_TIMESTAMP, ";
         self::$migration .= "\n\t`update_at` DATETIME NULL DEFAULT NULL, ";
     }
 

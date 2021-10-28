@@ -55,20 +55,20 @@ class Make
     public static function resourceController(string $name)
     {
         $path = self::$path . '/app/Controller/'. $name . ".php";
-        $controller = "<?php \n use App\Controller\BaseController;\n use \System\Http\Request; \n\n class $name extends BaseController \n { \n ";
-        $controller .= "\t\t/**\n\t\t* Display a listing of the resource.\n\t\t* @return \System\Http\Response\n\t\t*/\n";
+        $controller = "<?php \n use App\Controller\BaseController;\n use \System\Http\Request\Request; \n\n class $name extends BaseController \n { \n ";
+        $controller .= "\t\t/**\n\t\t* Display a listing of the resource.\n\t\t* @return \System\Http\Response\Response\n\t\t*/\n";
         $controller .= "\t\tpublic function index()\n\t\t{\n\t\t\t// \n\n \t\t}\n\n";
-        $controller .= "\t\t/**\n\t\t* Show the form for creating a new resource.\n\t\t* @return \System\Http\Response\n\t\t*/\n";
+        $controller .= "\t\t/**\n\t\t* Show the form for creating a new resource.\n\t\t* @return \System\Http\Response\Response\n\t\t*/\n";
         $controller .= "\t\tpublic function create()\n\t\t{\n\t\t\t// \n \t\t}\n\n";
-        $controller .= "\t\t/**\n\t\t* Store a newly created resource in storage.\n\t\t* @param \System\Http\Request \$request\n\t\t* @return \System\Http\Response\n\t\t*/\n";
+        $controller .= "\t\t/**\n\t\t* Store a newly created resource in storage.\n\t\t* @param \System\Http\Request\Request \$request\n\t\t* @return \System\Http\Response\Response\n\t\t*/\n";
         $controller .= "\t\tpublic function strore(Request \$request)\n\t\t{\n\t\t\t// \n \t\t}\n\n";
-        $controller .= "\t\t/**\n\t\t* Display the specified resource.\n\t\t* @param int|string \$id\n\t\t* @return \System\Http\Response\n\t\t*/\n";
+        $controller .= "\t\t/**\n\t\t* Display the specified resource.\n\t\t* @param int|string \$id\n\t\t* @return \System\Http\Response\Response\n\t\t*/\n";
         $controller .= "\t\tpublic function show(\$id)\n\t\t{\n\t\t\t// \n\n \t\t}\n\n";
-        $controller .= "\t\t/**\n\t\t* Show the form for editing the specified resource.\n\t\t* @param int|string \$id\n\t\t* @return \System\Http\Response\n\t\t*/\n";
+        $controller .= "\t\t/**\n\t\t* Show the form for editing the specified resource.\n\t\t* @param int|string \$id\n\t\t* @return \System\Http\Response\Response\n\t\t*/\n";
         $controller .= "\t\tpublic function edit(\$id)\n\t\t{\n\t\t\t// \n\n \t\t}\n\n";
-        $controller .= "\t\t/**\n\t\t* Update the specified resource in storage.\n\t\t* @param \System\Http\Request \$request\n\t\t* @return \System\Http\Response\n\t\t*/\n";
+        $controller .= "\t\t/**\n\t\t* Update the specified resource in storage.\n\t\t* @param \System\Http\Request\Request \$request\n\t\t* @return \System\Http\Response\Response\n\t\t*/\n";
         $controller .= "\t\tpublic function update(Request \$request)\n\t\t{\n\t\t\t// \n\n \t\t}\n\n";
-        $controller .= "\t\t/**\n\t\t* Remove the specified resource from storage.\n\t\t* @param \System\Http\Request \$request\n\t\t* @return \System\Http\Response\n\t\t*/\n";
+        $controller .= "\t\t/**\n\t\t* Remove the specified resource from storage.\n\t\t* @param \System\Http\Request\Request \$request\n\t\t* @return \System\Http\Response\Response\n\t\t*/\n";
         $controller .= "\t\tpublic function destroy(Request \$request)\n\t\t{\n\t\t\t// \n\n \t\t}\n\n}";
         $f = fopen($path, 'w+');
         if(!$f)

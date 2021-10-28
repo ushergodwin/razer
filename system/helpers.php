@@ -2,8 +2,10 @@
 use League\BooBoo\BooBoo;
 use System\Http\CRSF\CRSF;
 use System\Http\Redirect;
-use System\Http\Request;
-use System\Http\Response;
+use System\Http\Request\Request;
+use System\Http\Response\Alert;
+use System\Http\Response\Res;
+use System\Password\Password;
 use System\Views\Template;
 
 $root = $_SERVER['DOCUMENT_ROOT'];
@@ -184,27 +186,12 @@ if(!function_exists('route'))
     }
 }
 
-
-if(!function_exists('response'))
-{
-    /**
-     * Http Response helper
-     *
-     * @return \System\Http\Response;
-     */
-    function response()
-    {
-        return new Response();
-    }
-}
-
-
 if(!function_exists('request'))
 {
     /**
      * Http Request helper
      *
-     * @return \System\Http\Request
+     * @return \System\Http\Request\Request
      */
     function request()
     {
@@ -289,6 +276,54 @@ if(!function_exists('csrf_field'))
         $token = CRSF::crsfTokenValue();
         return "<input type='hidden' name='$token_id' value = '$token'>";
     }
+}
+
+if(!function_exists('crsf'))
+{
+    /**
+     * CRSF TOKEN ID
+     *
+     * @return string
+     */
+    function crsf()
+    {
+        return $_SESSION['token_id'];
+    }
+}
+
+if(!function_exists('password'))
+{
+    
+    /**
+     * Password helper
+     *
+     * @return \System\Password\Password
+     */
+    function password()
+    {
+        return new Password();
+    }
+}
+
+/**
+ * Response
+ *
+ */
+function response()
+{
+    return new Res();
+}
+
+
+
+/**
+ * Boostrap 4 Alerts
+ *
+ * @return \System\Http\Response\Alert
+ */
+function alert()
+{
+   return new Alert(); 
 }
 
 //CONSTANTS;

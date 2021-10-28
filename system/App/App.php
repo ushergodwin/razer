@@ -8,7 +8,7 @@ include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/autoload.php';
 strtolower(env("ERROR_REPORTING")) === "true" ? ini_set('display_errors', 1) : ini_set('display_errors', 0);
 
 use System\Routes\Route;
-use System\Http\Request;
+use System\Http\Request\Request;
 
 
 define("SYSTEM_PATH", $_SERVER['DOCUMENT_ROOT']."/system/");

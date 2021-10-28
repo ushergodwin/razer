@@ -1,5 +1,5 @@
 <?php
-namespace System\Http;
+namespace System\Http\Request;
 
 use stdClass;
 use System\Http\CRSF\CRSF;

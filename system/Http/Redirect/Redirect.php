@@ -50,8 +50,6 @@ class Redirect
      */ 
     public function with(string $message)
     {
-        session(['plainMessage' => $message]);
-        $message = response()->http($message, $this->status, true);
         session(['responseMessage' => $message]);
         return $this;
     }
