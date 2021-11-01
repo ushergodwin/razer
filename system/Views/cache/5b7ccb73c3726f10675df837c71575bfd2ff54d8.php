@@ -21,6 +21,7 @@
                         <h4 class="font-weight-bold text-info">LOGIN</h4>
                         <br/>
                         <form action="<?php echo e(url('home/auth')); ?>" method="post" id="loginForm">
+                            <?php echo csrf_field(); ?>
                             <div class="form-group">
                                 <label for="email" class="sr-only">Email</label>
                                 <i class="fas fa-envelope text-success"></i> <input type="text" name="email" class="form-control-custom bg-light" placeholder="enter your email or phone number" autocomplete="off" required/>

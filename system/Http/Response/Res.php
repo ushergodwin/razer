@@ -8,9 +8,18 @@ class Res
     {
         $status = array(
             200 => '200 OK',
+            201 => 'Created',
+            202 => 'Accepted',
+            302 => 'Found',
             400 => '400 Bad Request',
+            401 => 'Unauthorized',
+            402 => 'Payment Required',
+            403 => 'Not Found',
+            404 => 'Not Found',
+            408 => 'Request Timeout',
             422 => 'Unprocessable Entity',
-            500 => '500 Internal Server Error'
+            500 => '500 Internal Server Error',
+            502 => 'Bad Getway'
             );
         return $status[$code];
     }
@@ -35,14 +44,9 @@ class Res
         header("Cache-Control: no-transform,public,max-age=300,s-maxage=900");
         // treat this as json
         header('Content-Type: application/json');
-        $code = array(
-            200 => '200 OK',
-            400 => '400 Bad Request',
-            422 => 'Unprocessable Entity',
-            500 => '500 Internal Server Error'
-            );
+ 
         // ok, validation error, or failure
-        header('Status: '.$code[$status]);
+        header('Status: '.$this->status($status));
         // return the encoded json
         echo json_encode(array(
             'status' => $status, // success or not?
