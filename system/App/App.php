@@ -96,7 +96,6 @@ class App
                         $val_route = explode("::", $val);
                     }
 
-                    include_once(APP_PATH."Controller/" . $val_route[0] . ".php");
                     $class_ucfirst = ucfirst($val_route[0]);
                     
                     $class = New $class_ucfirst;
@@ -135,7 +134,6 @@ class App
                     if (strcmp($args_array_reversed, $dynamic_route_reversed) == 0) {
                         //When the strings match, we then route the request to the called class and method
                         $val_route = explode("::", $val); //We get the routing value and break it down to get the file name and class name
-                        include_once(APP_PATH."Controller/" . $val_route[0] . ".php"); //We then import the class file
                         $class_ucfirst = ucfirst($val_route[0]);
                         
                         $class = New  $class_ucfirst;
