@@ -92,7 +92,7 @@ $options = $argv;
 
         case 'cache:clear': 
             echo "\e[0;33;40mClearing cache...\e[0m " . "\n";
-            foreach(glob('system/Template/cache/' . '*') as $file) {
+            foreach(glob('system/Views/cache/' . '*') as $file) {
                 unlink($file);
             }
             echo "\e[0;32;40mCache cleared. \e[0m\n";

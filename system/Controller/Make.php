@@ -9,8 +9,25 @@ class Make
 
     public static function controller(string $name)
     {
+        $namespace = "App\Controller";
+        $filelocation = explode('/', $name);
+        $filelocation_num = count($filelocation);
+        $className = $name;
+        if($filelocation_num > 1)
+        {
+            $className = $filelocation[$filelocation_num - 1];
+            unset($filelocation[$filelocation_num - 1]);
+            $namespace .= "\\".implode("\\",$filelocation);
+            if(!file_exists(self::$path . "/app/Controller/".implode("/",$filelocation)."/"))
+            {
+                for($i = 0; $i < ($filelocation_num - 1); $i++)
+                {
+                    mkdir(self::$path . "/app/Controller/". $filelocation[$i]);
+                }
+            }
+        }
         $path = self::$path . '/app/Controller/'. $name . ".php";
-        $controller = "<?php \n use App\Controller\BaseController;\n\n class $name extends BaseController \n { \n\n }";
+        $controller = "<?php \n namespace $namespace; \n use App\Controller\BaseController;\n\n class $className extends BaseController \n { \n\n }";
         $f = fopen($path, 'w+');
         if(!$f)
         {
@@ -31,9 +48,26 @@ class Make
 
     public static function model(string $name)
     {
+        $namespace = "App\Models";
+        $filelocation = explode('/', $name);
+        $filelocation_num = count($filelocation);
+        $className = $name;
+        if($filelocation_num > 1)
+        {
+            $className = $filelocation[$filelocation_num - 1];
+            unset($filelocation[$filelocation_num - 1]);
+            $namespace .= "\\".implode("\\",$filelocation);
+            if(!file_exists(self::$path . "/app/Models/".implode("/",$filelocation)."/"))
+            {
+                for($i = 0; $i < ($filelocation_num - 1); $i++)
+                {
+                    mkdir(self::$path . "/app/Models/". $filelocation[$i]);
+                }
+            }
+        }
         $name = Grammer::singular($name);
         $path = self::$path . '/app/Models/'. $name . ".php";
-        $controller = "<?php \n namespace App\Models; \n use System\Models\Model;\n\n class $name extends Model \n { \n\n }";
+        $controller = "<?php \n namespace $namespace; \n use System\Models\Model;\n\n class $className extends Model \n { \n\n }";
         $f = fopen($path, 'w+');
         if(!$f)
         {
@@ -54,8 +88,26 @@ class Make
 
     public static function resourceController(string $name)
     {
+        $namespace = "App\Controller";
+        $filelocation = explode('/', $name);
+        $filelocation_num = count($filelocation);
+        $className = $name;
+        if($filelocation_num > 1)
+        {
+            $className = $filelocation[$filelocation_num - 1];
+            unset($filelocation[$filelocation_num - 1]);
+            $namespace .= "\\".implode("\\",$filelocation);
+            if(!file_exists(self::$path . "/app/Controller/".implode("/",$filelocation)."/"))
+            {
+                for($i = 0; $i < ($filelocation_num - 1); $i++)
+                {
+                    mkdir(self::$path . "/app/Controller/". $filelocation[$i]);
+                }
+            }
+        }
+
         $path = self::$path . '/app/Controller/'. $name . ".php";
-        $controller = "<?php \n use App\Controller\BaseController;\n use \System\Http\Request\Request; \n\n class $name extends BaseController \n { \n ";
+        $controller = "<?php \n namespace $namespace; \n use App\Controller\BaseController;\n use \System\Http\Request\Request; \n\n class $className extends BaseController \n { \n ";
         $controller .= "\t\t/**\n\t\t* Display a listing of the resource.\n\t\t* @return \System\Http\Response\Response\n\t\t*/\n";
         $controller .= "\t\tpublic function index()\n\t\t{\n\t\t\t// \n\n \t\t}\n\n";
         $controller .= "\t\t/**\n\t\t* Show the form for creating a new resource.\n\t\t* @return \System\Http\Response\Response\n\t\t*/\n";
