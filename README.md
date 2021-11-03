@@ -90,7 +90,8 @@ Other options of join methods include
 ## Use a different database when querying
 `DB::table('table_name')->use('database_name', 'table')->get();`
 
-## Eloquent Models
+
+# Eloquent Models
 - You can extend the Model class to you have you model called on its corresponding table name.
 - The Model name should be singular and the table name in plural form
 - The Eloquent model will convert your model name from singular to plural before querying the model objects.
@@ -180,4 +181,48 @@ Clear Cache:                        |   php manage cache:clear
 - For more information or inquiries, please call 
 - +256 754438448 OR 
 - Email godwintumuhimbise96@gmail.com
+
+
+# Requests
+- All methods that receive data through an HTTP POST request should have a $request paramater
+- ## HTTP POST
+` public function saveUser(Request $request)
+{
+  $name = $request->post('name'); // get the value of name sent through an HTTP POST
+  echo $name;
+}`
+
+// OR
+` public function saveUser(Request $request)
+  {
+    $name = $request->name; //dynamically assigned properties the Request Class
+    echo $name;
+  }`
+
+// OR
+ `public function saveUser(Request $request)
+{
+  $name = $request->body->name; //dynamically assigned properties the Request Class
+  echo $name;
+}`
+- ## HTTP GET
+` public function saveUser(Request $request)
+{
+  $name = $request->get('name'); // get the value of name sent through an HTTP GET
+  echo $name;
+}`
+
+// OR
+`public function saveUser(Request $request)
+{
+  $name = $request->name;
+  echo $name;
+}`
+
+// OR
+ `public function saveUser(Request $request)
+{
+  $name = $request->params->name;
+  echo $name;
+}`
 ## End
