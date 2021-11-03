@@ -14,7 +14,16 @@ Migrations::__init__(__DIR__);
 $options = $argv;
 
  if(!empty($options)) {
+     
     switch ($options[1]) {
+        case 'make:db':
+            if(isset($options[2]))
+            {
+                return Migrations::createDatabase($options[2]);
+            }
+            Migrations::createDatabase();
+            break;
+
         case ($options[1] === '--version' || $options[1] === "-v"):
             echo "\e[0;32;40mv".Migrations::$version . "\e[0m";
             break;
