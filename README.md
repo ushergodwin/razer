@@ -16,6 +16,7 @@
 1. [Request](#requests)
 2. [Response](#response)
 3. [Redirect](#redirect)
+4. [Routing](#routes)
 ## Insert one / Many
 // For many, supply an array of arrays of data.
 `DB::table('table_name')->save($data);`
@@ -179,13 +180,18 @@ Clear Migration logs/errors:        |   `php manage migrate:log --clear` Clears 
 # Controllers and Models        
 ## Case; All Controllers and Models should use CamelCase and should be in singular form
 ------------------------------------------------------------------------------------------
-Make Controller:                    |   `php manage make:controller ControllerName` //in singular Will create a controller under app/Controller/
+Make Controller:                    |   `php manage make:controller ControllerName` 
+- //in singular Will create a controller under app/Controller/
+- The resource controller is created with methods, index, create, store, show, edit, update, and destroy
 ------------------------------------------------------------------------------------------
-Make a Resource Controller:         |   `php manage make:controller ControllerName --resource` Creates a resource controller with CRUD methods
+Make a Resource Controller:         |   `php manage make:controller ControllerName --resource` 
+- // Creates a resource controller with CRUD methods
 ------------------------------------------------------------------------------------------
-Make Model:                         |   `php manage make:model ModelName` // in singular Creates a model under app/Models
+Make Model:                         |   `php manage make:model ModelName` 
+- // in singular Creates a model under app/Models
 ------------------------------------------------------------------------------------------
-Make Model and its migration:       |   php manage make:model -M ModelName // in singular
+Make Model and its migration:       |   php manage make:model -M ModelName 
+- // in singular
 ------------------------------------------------------------------------------------------
 
 # Template                     
@@ -260,8 +266,35 @@ The response class has 2 methods, ie send and json. Send() send a plain text res
     return response()->json(200, $email); // can be received through the message property
   }`
   
- ## Redirect
+ # Redirect
  `redirect('user/dashboard');`
  - Redirect back
  `redirect()->back();`
+ # Routes
+ - The Routes class has 6 methods, get, post, group, except, name. and resource
+ - ## GET
+ - The get and post methods takes 2 arguements, $url (the url to go to) and $callback, an array of controller name and its method
+ - Simple get route `Route::get('user/profile', [UserController::class, 'userProfile']);`
+ - ## POST
+ - Simple get route `Route::post('user/profile', [UserController::class, 'userProfile']);`
+ - ## GROUP
+ - Takes in 2 arguments, $prefix (array), $callback (closure)
+ - `Route::group(['prefix' => 'admin', function(){ Route::get('/dashboard', [AdminController::class, 'index']); });` in the template ` <a href='{{ url('admin/dashboard') }}'>Dashboard</a>
+ - ## Resource
+ - This Route method is used to create routes for resource controllers
+ - `Route::resource('products', ProductController::class);` // products is the prefix of the route
+ - The above creates the following routes
+ - /products (GET)
+ - /products/create (GET)
+ - /products/show/product_id (GET)
+ - /products/product_id/edit (GET)
+ - /products/update (POST)
+ - /products/destroy (POST)
+ - /products/store (POST)
+ - ## Except
+ - You can call the except method to ignore the specified class methods when creating routes `Route::resource('products', ProductController::class)->except(['destroy']);`
+ - ## name
+ - On top of get and post methods, you can call the name method and register a short route name to use. This name must be used within the route method
+ - In routes `Route::post('user/profile', [UserController::class, 'userProfile'])->name('user.p');`
+ - In the template ` <a href='{{ route('user.p') }}'>Dashboard</a>` // takes you to user/profile
 ## End
