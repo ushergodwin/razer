@@ -53,13 +53,16 @@ class Migrations extends ColumnDefination
         self::$db = null;
     }
 
-    private static function connect() {
+    private static function connect(bool $is_db = false) {
         $mysql_host = SERVER_NAME;
         $mysql_database = DATABASE_NAME;
         $mysql_user = USER_NAME;
         $mysql_password = PASSWORD;
         try {
-            $conn = new PDO("mysql:host=$mysql_host;", $mysql_user, $mysql_password);
+            if($is_db)
+            {
+                return new PDO("mysql:host=$mysql_host;", $mysql_user, $mysql_password);
+            }
             $conn = new PDO("mysql:host=$mysql_host;dbname=$mysql_database", $mysql_user, $mysql_password);
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             self::$server_version = $conn->getAttribute(PDO::ATTR_SERVER_VERSION);
@@ -88,6 +91,18 @@ class Migrations extends ColumnDefination
     public static function config(array $config, bool $is_file = false) {
         self::$config = (object) $config;
         self::$is_file = $is_file;
+    }
+
+    public static function createDatabase(string $dbname = DATABASE_NAME)
+    {
+        $db = self::connect(true);
+        try {
+            $db->exec("CREATE DATABASE $dbname");
+            echo "\e[0;32;40mCreated database \e[0m" . $dbname . "\n";
+        } catch(PDOException $e)
+        {
+            echo $e->getMessage();
+        }
     }
 
     /**

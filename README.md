@@ -134,6 +134,49 @@ $inters->save();`
 
 - Only queries with bindings are executed with the query method
 
+# Migrations
+--------------------------------------------------------------------------------------
+Create Database:                    |   `php manage make:db` if the database name is not specified in the .env configurations, use `php manage make:db dbname`
+--------------------------------------------------------------------------------------
+Make Migration:                     |   `php manage make:migration create_migration_name` This will create a migrations file under database/migrations directory. (tables names should be in a plural form)
+--------------------------------------------------------------------------------------
+RunAll Migrations:                  |   `php manage migrate` This will run all migrations
+---------------------------------------------------------------------------------------
+Migration a specific file:          |   `php manage migrate --file=filename` This will run migations for a single file. (do not put the file extension)
+---------------------------------------------------------------------------------------
+Group Migrations into 1 sql file    |   `php manage migrate:group` All migration files will be grouped into one sql file
+----------------------------------------------------------------------------------------
+Run grouped migration:              |   `php mange migrate:group --run` This will run grouped migrations
+----------------------------------------------------------------------------------------
+Run Migartion modifications         |   `php manage migrate:modifiy` This will run migration modifications
+-----------------------------------------------------------------------------------------
+List Migrations:                    |   `php manage migrate:list` Lists all run migrations
+-----------------------------------------------------------------------------------------
+Drop Migrations:                    |   `php manage migrate:rollback` Rolls back migrations
+-----------------------------------------------------------------------------------------
+Drop and re-run migrations:         |   `php manage migrate:refresh` Rools back and re-runs migrations
+------------------------------------------------------------------------------------------
+Show Migration logs/errors:         |   `php manage migrate:log` Logs Migrations errors
+------------------------------------------------------------------------------------------
+Clear Migration logs/errors:        |   `php manage migrate:log --clear` Clears migrations errors
+------------------------------------------------------------------------------------------
+
+# Controllers and Models        
+## Case; All Controllers and Models should use CamelCase and should be in singular form
+------------------------------------------------------------------------------------------
+Make Controller:                    |   `php manage make:controller ControllerName` //in singular Will create a controller under app/Controller/
+------------------------------------------------------------------------------------------
+Make a Resource Controller:         |   `php manage make:controller ControllerName --resource` Creates a resource controller with CRUD methods
+------------------------------------------------------------------------------------------
+Make Model:                         |   `php manage make:model ModelName` // in singular Creates a model under app/Models
+------------------------------------------------------------------------------------------
+Make Model and its migration:       |   php manage make:model -M ModelName // in singular
+------------------------------------------------------------------------------------------
+
+# Template                     
+------------------------------------------------------------------------------------------
+Clear Cache:                        |   php manage cache:clear
+------------------------------------------------------------------------------------------
 - For more information or inquiries, please call 
 - +256 754438448 OR 
 - Email godwintumuhimbise96@gmail.com
