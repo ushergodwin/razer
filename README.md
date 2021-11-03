@@ -13,9 +13,9 @@
 8. [Eloquent Models](#eloquent-models)
 9. [Migrations](#migrations)
 ## HTTP
-1. [Request](#request)
+1. [Request](#requests)
 2. [Response](#response)
-3. 
+3.[Redirect](#redirect)
 ## Insert one / Many
 // For many, supply an array of arrays of data.
 `DB::table('table_name')->save($data);`
@@ -259,4 +259,9 @@ The response class has 2 methods, ie send and json. Send() send a plain text res
     $email = $request->post('email');
     return response()->json(200, $email); // can be received through the message property
   }`
+  
+ ## Redirect
+ `redirect('user/dashboard');`
+ - Redirect back
+ `redirect()->back();`
 ## End
