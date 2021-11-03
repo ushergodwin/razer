@@ -225,4 +225,24 @@ Clear Cache:                        |   php manage cache:clear
   $name = $request->params->name;
   echo $name;
 }`
+
+# Response
+The response class has 2 methods, ie send and json. Send() send a plain text response while json send a json formated respeonse.
+- Both methods have 2 parameters
+1. status --> http status code. Supported status codes are 200,202,302, 400, 401, 402, 403, 404, 408, 422, 500, 502
+2. Message --> text / json reponse to send. 
+- ## HTTP Plain text response
+
+`public function login(Request $request)
+  {
+    $email = $request->post('email');
+    return response()->send(200, $email);
+  }`
+  
+ - ## HTTP JSON response
+ `public function login(Request $request)
+  {
+    $email = $request->post('email');
+    return response()->json(200, $email); // can be received through the message property
+  }`
 ## End
