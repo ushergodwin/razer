@@ -1,7 +1,12 @@
 # Phaser MCV
 - Phaser MCV is a PHP library that provides a convenient MVC (Model, View Controller) structure for systems development.
 - Do you want something small but yet powerfull, this is your best choice
-# Databse operations
+# Table of contents
+## Database
+1. [Insert](#insert)
+2. [Update](#update)
+3. [Delete](#delete)
+4. [Eloquent Models](#eloquent)
 ## Insert one / Many
 // For many, supply an array of arrays of data.
 `DB::table('table_name')->save($data);`
