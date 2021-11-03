@@ -15,7 +15,7 @@
 ## HTTP
 1. [Request](#requests)
 2. [Response](#response)
-3.[Redirect](#redirect)
+3. [Redirect](#redirect)
 ## Insert one / Many
 // For many, supply an array of arrays of data.
 `DB::table('table_name')->save($data);`
