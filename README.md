@@ -3,10 +3,19 @@
 - Do you want something small but yet powerfull, this is your best choice
 # Table of contents
 ## Database
-1. [Insert](#insert)
-2. [Update](#update)
-3. [Delete](#delete)
-4. [Eloquent Models](#eloquent)
+1. [Insert](#insert-one--many)
+2. [Update](#update-a-record)
+3. [Delete](#delete-a-record)
+4. [Truncate](#truncate-the-whole-table)
+5. [Affected Rows](#affected-rows)
+6. [Fetch Data](#fetch-all)
+7. [Join Tables](#join-tables)
+8. [Eloquent Models](#eloquent-models)
+9. [Migrations](#migrations)
+## HTTP
+1. [Request](#request)
+2. [Response](#response)
+3. 
 ## Insert one / Many
 // For many, supply an array of arrays of data.
 `DB::table('table_name')->save($data);`
