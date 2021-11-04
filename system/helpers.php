@@ -77,7 +77,7 @@ if(!function_exists('APPPATH'))
      */
     function APPPATH()
     {
-        return $_SERVER['DOCUMENT_ROOT'];
+        return BASE_PATH;
     }
 }
 
@@ -326,6 +326,4 @@ function alert()
    return new Alert(); 
 }
 
-//CONSTANTS;
-define('APPNAME', env('APP_NAME'));
-define('APPPATH', $_SERVER['DOCUMENT_ROOT']);
+
