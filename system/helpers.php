@@ -8,13 +8,13 @@ use System\Http\Response\Res;
 use System\Password\Password;
 use System\Views\Template;
 
-$root = $_SERVER['DOCUMENT_ROOT'];
+$root = BASE_PATH;
 if(empty(trim($root)))
 {
     $root = @getcwd();
 }
+$root = str_replace('public', '', $root);
 require_once $root . '/vendor/autoload.php';
-
 $dotenv = Dotenv\Dotenv::createImmutable(dirname( __DIR__));
 $dotenv->safeLoad();
 

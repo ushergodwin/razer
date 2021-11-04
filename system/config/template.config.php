@@ -1,2 +1,2 @@
 <?php
-include_once $_SERVER['DOCUMENT_ROOT']."/app/Config/template.config.php";
+include_once BASE_PATH."/app/Config/template.config.php";

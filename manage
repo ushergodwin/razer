@@ -4,11 +4,10 @@
 use System\Controller\Make;
 use System\Database\Grammer\Grammer;
 use System\Database\Migrations\Migrations;
-
+define('BASE_PATH', __DIR__);
 require_once __DIR__. '/system/Database/Migrations/Migrations.php';
 
 Migrations::__init__(__DIR__);
-
 //command line arguments
 
 $options = $argv;
@@ -76,7 +75,7 @@ $options = $argv;
             Migrations::groupMigrations();
             break;
 
-        case 'migrate:list':
+        case 'migrate:status':
             Migrations::listMigrations();
             break;
 

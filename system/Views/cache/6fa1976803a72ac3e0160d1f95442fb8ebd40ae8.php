@@ -21,6 +21,7 @@
             <div class="alert alert-success fade show">
                 <strong>You have successfully installed the PHASER PHP Library v<?php echo e(VERSION); ?></strong>
             </div>
+            <a href="<?php echo e(url('user/create')); ?>">Create User</a>
         </div>
     </body>
 </html><?php /**PATH C:\xampp\htdocs\phaser\app\views/index.blade.php ENDPATH**/ ?>

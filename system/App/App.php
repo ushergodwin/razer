@@ -1,9 +1,9 @@
 <?php
 namespace System\App;
 session_start();
-define("BASE_PATH", $_SERVER['DOCUMENT_ROOT']."/");
+
 define("VERSION", '1.0.0');
-include_once $_SERVER['DOCUMENT_ROOT'].'/vendor/autoload.php';
+include_once BASE_PATH.'/vendor/autoload.php';
 
 strtolower(env("ERROR_REPORTING")) === "true" ? ini_set('display_errors', 1) : ini_set('display_errors', 0);
 
@@ -11,9 +11,9 @@ use System\Routes\Route;
 use System\Http\Request\Request;
 
 
-define("SYSTEM_PATH", $_SERVER['DOCUMENT_ROOT']."/system/");
+define("SYSTEM_PATH", BASE_PATH."/system/");
 
-define("APP_PATH", $_SERVER['DOCUMENT_ROOT']."/app/");
+define("APP_PATH", BASE_PATH."/app/");
 
 define("APP_NAME", env('APP_NAME'));
 
