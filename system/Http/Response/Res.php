@@ -14,8 +14,9 @@ class Res
             400 => '400 Bad Request',
             401 => 'Unauthorized',
             402 => 'Payment Required',
-            403 => 'Not Found',
+            403 => 'Forbidden',
             404 => 'Not Found',
+            405 => 'Method Not Allowed',
             408 => 'Request Timeout',
             422 => 'Unprocessable Entity',
             500 => '500 Internal Server Error',
@@ -25,6 +26,41 @@ class Res
     }
 
 
+    /**
+     * Send a plain text HTTP Response
+     *
+     * @param integer $status
+     *  200 => OK
+     * 
+     *  201 -> Created
+     * 
+     *  202 -> Accepted
+     * 
+     *  302 -> Found
+     * 
+     *  400 -> 400 Bad Request
+     * 
+     *  401 -> Unauthorized
+     * 
+     *  402 -> Payment Required
+     * 
+     *  403 -> Forbidden
+     * 
+     *  404 -> Not Found
+     * 
+     *  405 -> Method Not Allowed
+     * 
+     *  408 -> Request Timeout
+     * 
+     *  422 -> Unprocessable Entity
+     * 
+     *  500 -> 500 Internal Server Error
+     * 
+     *  502 -> Bad Getway
+     * @param int $status HTTP status code
+     * @param string $message The message response
+     * @return void
+     */
     public function send(int $status, string $message)
     {
         header_remove();
@@ -34,6 +70,42 @@ class Res
         echo $message;
     }
 
+
+    /**
+     * Send a json HTTP Response
+     *
+     * @param integer $status
+     *  200 => OK
+     * 
+     *  201 -> Created
+     * 
+     *  202 -> Accepted
+     * 
+     *  302 -> Found
+     * 
+     *  400 -> 400 Bad Request
+     * 
+     *  401 -> Unauthorized
+     * 
+     *  402 -> Payment Required
+     * 
+     *  403 -> Forbidden
+     * 
+     *  404 -> Not Found
+     * 
+     *  405 -> Method Not Allowed
+     * 
+     *  408 -> Request Timeout
+     * 
+     *  422 -> Unprocessable Entity
+     * 
+     *  500 -> 500 Internal Server Error
+     * 
+     *  502 -> Bad Getway
+     * @param int $status HTTP status code
+     * @param string $message The message response
+     * @return void
+     * */
     public function json(int $status, $message = null)
     {
            // clear the old headers

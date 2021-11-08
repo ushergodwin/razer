@@ -21,7 +21,6 @@
             <div class="alert alert-success fade show">
                 <strong>You have successfully installed the PHASER PHP Library v{{VERSION}}</strong>
             </div>
-            <a href="{{ url('user/create')}}">Create User</a>
         </div>
     </body>
 </html>

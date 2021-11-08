@@ -100,7 +100,7 @@ class App
                     
                     $class = New $class_ucfirst;
                     if ($_SERVER['REQUEST_METHOD'] == "POST"){
-                      call_user_func_array(array($class, $val_route[1]), [new Request]);
+                        call_user_func_array(array($class, $val_route[1]), [new Request]);
                         return;
                     }
                     call_user_func(array($class, $val_route[1]));
@@ -133,12 +133,20 @@ class App
                     $dynamic_route_reversed = implode("/", $dynamic_route_reversed);
                     if (strcmp($args_array_reversed, $dynamic_route_reversed) == 0) {
                         //When the strings match, we then route the request to the called class and method
+                        if(is_callable($val))
+                        {
+                            return call_user_func_array($val, $func_arguments);
+                        }
+                        if(isset($_POST['_method']) and $_POST['_method'] == "DELETE")
+                        {
+                            $val = implode('::', $val);   
+                        }
                         $val_route = explode("::", $val); //We get the routing value and break it down to get the file name and class name
+                        
                         $class_ucfirst = ucfirst($val_route[0]);
                         
                         $class = New  $class_ucfirst;
-                        call_user_func_array(array($class, $val_route[1]), $func_arguments);
-                        return;
+                        return call_user_func_array(array($class, $val_route[1]), $func_arguments);
                     }
                 } else
                     continue;

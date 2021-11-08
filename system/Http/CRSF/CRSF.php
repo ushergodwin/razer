@@ -7,7 +7,7 @@ class CRSF
         if(isset($_SESSION['token_id'])) { 
                 return $_SESSION['token_id'];
         }
-        $token_id = $this->random(10);
+        $token_id = '_token';
         $_SESSION['token_id'] = $token_id;
         return $token_id;
 	}

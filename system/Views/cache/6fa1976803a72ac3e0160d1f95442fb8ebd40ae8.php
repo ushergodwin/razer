@@ -21,7 +21,14 @@
             <div class="alert alert-success fade show">
                 <strong>You have successfully installed the PHASER PHP Library v<?php echo e(VERSION); ?></strong>
             </div>
-            <a href="<?php echo e(url('user/create')); ?>">Create User</a>
+            <a href="<?php echo e(url('users/2')); ?>">Create User</a>
+
+            <div class="mt-3">
+                <form action="<?php echo e(url('users/3')); ?>" method="POST">
+                    <?php echo method_field('DELETE'); ?>
+                    <button type="submit" class="btn btn-success">Update</button>
+                </form>
+            </div>
         </div>
     </body>
 </html><?php /**PATH C:\xampp\htdocs\phaser\app\views/index.blade.php ENDPATH**/ ?>

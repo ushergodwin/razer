@@ -111,12 +111,12 @@ class Route
         $resourse::get($name.'/create', [$controller, 'create'])->name($name."."."create");
 
         if ((new self)->requestMethod() == 'post'){
-            $resourse::post($name.'/destroy', [$controller, 'destroy'])->name($name."."."destroy");
-            $resourse::post($name.'/update', [$controller, 'update'])->name($name."."."update");
+            $resourse::put($name, [$controller, 'update'])->name($name."."."update");
             $resourse::post($name.'/store', [$controller, 'store'])->name($name."."."store");
         }
         $resourse::get($name.'/{id}/edit', [$controller, 'edit::$1'])->name($name.".$1"."edit");
-        $resourse::get($name.'/show/{id}', [$controller, 'edit::$1'])->name($name.".$1"."edit");
+        $resourse::get($name.'/{id}', [$controller, 'edit::$1'])->name($name.".$1"."edit");
+        $resourse::delete($name.'/{id}', [$controller, 'destroy'])->name($name."."."destroy");
         return $resourse; 
     }
 
@@ -165,5 +165,52 @@ class Route
     {
         $uri = str_replace('.', '/', $name);
         session([$name => $uri]);
+    }
+
+        /**
+     * Make a PUT Request Route map
+     *
+     * @param string $uri The request URI
+     * @param callable|array $callback Callback class and method || Callback function
+     * @return \System\Routes\Route
+     */
+    static function put(string $uri, $callback) {
+        $route = new self;
+        if($route::requestMethod() == "post") {
+
+            if(isset($_POST['_method']) and strtoupper($_POST['_method']) == "PUT"
+             || strtoupper($_POST['_method']) == "DELETE")
+            {
+                $route::map_uri($uri, $callback);  
+            }else {
+                response()->send(405, 'Method not allowed!');
+                die();
+            }
+        }
+        return $route;
+    }
+
+
+    /**
+     * Make a DELETE Request Route map
+     *
+     * @param string $uri The request URI
+     * @param callable|array $callback Callback class and method || Callback function
+     * @return \System\Routes\Route
+     */
+    static function delete(string $uri, $callback) {
+        $route = new self;
+
+        if(isset($_REQUEST['_method']) and strtoupper($_REQUEST['_method']) == "DELETE")
+        {
+            if(preg_match('/{(.*?)}/', $uri) === 1)
+            {
+                    $uri = preg_replace('/{(.*?)}/', "(:any)", $uri);
+            }
+               
+            $route::map_uri($uri, $callback);
+                
+        }
+        return $route;
     }
 }

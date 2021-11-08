@@ -1,7 +1,7 @@
 <?php
 namespace System\Models;
 
-require_once APPPATH().'/vendor/autoload.php';
+require_once BASE_PATH . '/vendor/autoload.php';
 
 use System\Database\Eloquent\Eloquent;
 

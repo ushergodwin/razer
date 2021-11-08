@@ -120,8 +120,8 @@ class Make
         $controller .= "\t\tpublic function edit(\$id)\n\t\t{\n\t\t\t// \n\n \t\t}\n\n";
         $controller .= "\t\t/**\n\t\t* Update the specified resource in storage.\n\t\t* @param \System\Http\Request\Request \$request\n\t\t* @return \System\Http\Response\Response\n\t\t*/\n";
         $controller .= "\t\tpublic function update(Request \$request)\n\t\t{\n\t\t\t// \n\n \t\t}\n\n";
-        $controller .= "\t\t/**\n\t\t* Remove the specified resource from storage.\n\t\t* @param \System\Http\Request\Request \$request\n\t\t* @return \System\Http\Response\Response\n\t\t*/\n";
-        $controller .= "\t\tpublic function destroy(Request \$request)\n\t\t{\n\t\t\t// \n\n \t\t}\n\n}";
+        $controller .= "\t\t/**\n\t\t* Remove the specified resource from storage.\n\t\t* @param int|string \$id\n\t\t* @return \System\Http\Response\Response\n\t\t*/\n";
+        $controller .= "\t\tpublic function destroy(\$id)\n\t\t{\n\t\t\t// \n\n \t\t}\n\n}";
         $f = fopen($path, 'w+');
         if(!$f)
         {

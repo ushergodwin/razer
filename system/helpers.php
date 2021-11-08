@@ -64,23 +64,7 @@ if(!function_exists('url'))
         !empty(trim($url)) ? $base .= $url : $base;
         return $base;
     }
-}
-
-
-
-if(!function_exists('APPPATH'))
-{
-    /**
-     * Return the app path
-     *
-     * @return string
-     */
-    function APPPATH()
-    {
-        return BASE_PATH;
-    }
-}
-
+} 
 
 
 if(!function_exists('array_to_object'))
@@ -274,7 +258,16 @@ if(!function_exists('csrf_field'))
     {
         $token_id = CRSF::crsfTokenId();
         $token = CRSF::crsfTokenValue();
-        return "<input type='hidden' name='$token_id' value = '$token'>";
+        return "<input type='hidden' name='$token_id' value ='$token'>";
+    }
+}
+
+if(!function_exists('method_field'))
+{
+    function method_field(string $method)
+    {
+        $method = strtoupper($method);
+        return "<input type='hidden' name='_method' value ='$method'>";
     }
 }
 

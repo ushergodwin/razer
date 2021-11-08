@@ -107,13 +107,13 @@ class Request {
                 //Send a 405 Method Not Allowed header.
                 header($_SERVER["SERVER_PROTOCOL"]." 405 Method Not Allowed", true, 405);
                 //Halt the script's execution.
-                exit;
+                exit("<div align='center' style='color: red;'>OOPS, PAGE EXPIRED!</div>");
 
             case 3:
                 //Send a 405 Method Not Allowed header.
                 header($_SERVER["SERVER_PROTOCOL"]." 405 Method Not Allowed", true, 405);
                 //Halt the script's execution.
-                exit;
+                exit("<div align='center' style='color: red;'>OOPS, PAGE EXPIRED!</div>");
         }
     }
 
