@@ -10,8 +10,8 @@
         <title>{{ APP_NAME . " | ". $title }}</title>
         <meta name="description" content="Phase php library">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="icon" type="png/x-image" href="{{assets('imgs/icons/favicon.ico')}}"/>
-        <link rel="stylesheet" href="{{ assets('bootstrap/css/bootstrap.min.css') }}"/>
+        <link rel="icon" type="png/x-image" href="{{asset('imgs/icons/favicon.ico')}}"/>
+        <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}"/>
     </head>
     <body class="bg-light">
         <!--[if lt IE 7]>

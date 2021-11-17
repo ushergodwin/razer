@@ -3,6 +3,7 @@ namespace System\App;
 session_start();
 
 define("VERSION", '1.0.0');
+
 include_once BASE_PATH.'/vendor/autoload.php';
 
 strtolower(env("ERROR_REPORTING")) === "true" ? ini_set('display_errors', 1) : ini_set('display_errors', 0);
@@ -20,17 +21,29 @@ define("APP_NAME", env('APP_NAME'));
 include_once(APP_PATH."/routes/routes.php");
 
 
+/**
+ * Application
+ */
 class App 
 {
+
+    /**
+     * Boot the application
+     *
+     * @return \System\App\App
+     */
+    public static function Boot() {
+        return new self;
+    }
 
     /**
      * Run the application
      *
      * @return void
      */
-    public static function Run() {
-
-        (new self)->__init__();
+    public function run()
+    {
+        return $this->__init__();
     }
 
     private function __init__() {
@@ -38,7 +51,7 @@ class App
         //re order routes such that dynamic ones come last
         foreach($routes as $key => $value)
         {
-            if(preg_match('/\b(\w*any\w*)\b/', $key, $matches) === 1)
+            if(preg_match('/\b(\w*args\w*)\b/', $key, $matches) === 1)
             {
                 unset($routes[$key]);
                 $routes[$key] = $value;
@@ -67,7 +80,7 @@ class App
 
         $args = implode("/", explode("?", $args));
 
-        $this->map_uri_to_method($routes, $args, $args_array);
+        return $this->map_uri_to_method($routes, $args, $args_array);
     }
 
 
@@ -77,9 +90,9 @@ class App
         foreach ($routes as $route => $val) {
             $is_args_supplied = false;
             $dynamic_route = explode("/", $route);
-            if (in_array("(:any)", $dynamic_route)) {
+            if (in_array("(:args)", $dynamic_route)) {
                 $is_args_supplied = true;
-                //Dynamic array comes from route after removing the (:any) argument
+                //Dynamic array comes from route after removing the (:args) argument
                 //We use it to determine the exact url by match the uri with the route class arguments
                 //unset($dynamic_route[count($dynamic_route) - 1]);
             }
@@ -100,12 +113,9 @@ class App
                     
                     $class = New $class_ucfirst;
                     if ($_SERVER['REQUEST_METHOD'] == "POST"){
-                        call_user_func_array(array($class, $val_route[1]), [new Request]);
-                        return;
+                        return call_user_func_array(array($class, $val_route[1]), [new Request]);
                     }
-                    call_user_func(array($class, $val_route[1]));
-                    //Lets deal with function arguments;
-                    return;
+                    return call_user_func(array($class, $val_route[1]));
                 } else
                     continue;
             } else {
@@ -119,7 +129,7 @@ class App
                 //In this case, we want to begin the array from the end to the first. We do not reserve array positions in this case
                 if($dynamic_len === $argc_len) { 
                     for ($i = 0; $i < $argc_len ; $i++)
-                        if (strcmp($dynamic_route_reversed[$i], "(:any)") == 0) {
+                        if (strcmp($dynamic_route_reversed[$i], "(:args)") == 0) {
                             unset($dynamic_route_reversed[$i]);
                             if (isset($args_array_reversed[$i])) { //Lets store the arguments provided by the uri
                                 $func_arguments[$i] = $args_array_reversed[$i];
@@ -158,6 +168,6 @@ class App
 
     private function urlNotFound() {
         header("HTTP/1.0 404 Not Found");
-        exit("<div align='center'><a href='/'><img src='".url('404.jpg')."'/> </div></a> ");
+        exit("<div align='center'><a href='/'><img src='".asset('404.jpg')."'/> </div></a> ");
     }
 }

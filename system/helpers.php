@@ -1,10 +1,10 @@
 <?php
 use League\BooBoo\BooBoo;
 use System\Http\CRSF\CRSF;
-use System\Http\Redirect;
+use System\Http\Redirect\Redirect;
 use System\Http\Request\Request;
-use System\Http\Response\Alert;
-use System\Http\Response\Res;
+use System\Http\Response\Alert\Alert;
+use System\Http\Response\Response;
 use System\Password\Password;
 use System\Views\Template;
 
@@ -133,7 +133,7 @@ if(!function_exists('session'))
 
 
 
-if(!function_exists('assets'))
+if(!function_exists('asset'))
 {
     /**
      * Access app assets
@@ -141,7 +141,7 @@ if(!function_exists('assets'))
      * @param string $asset
      * @return string asset url
      */
-    function assets(string $asset){
+    function asset(string $asset){
         return url($asset);
     }
 }
@@ -206,20 +206,11 @@ if(!function_exists('redirect'))
         
     /**
      * Send an Http Redirect
-     * @param int $status Response status
-     *  
-     *  200 - Success
-     * 
-     * 418 - Infor
-     * 
-     * 419 - Failure
-     * 
-     * 500 - Server error
-     * @return \System\Http\Redirect
+     * @param string $url redirect url
+     * @return \System\Http\Redirect\Redirect
      */
-    function redirect(string $url = '', int $status = 200) {
+    function redirect(string $url = '') {
         $redirect = new Redirect();
-        $redirect->status = $status;
         $redirect->url = $url;
         return $redirect;
     }
@@ -300,11 +291,11 @@ if(!function_exists('password'))
 
 /**
  * Response
- *
+ * @return \System\Http\Response\Response
  */
 function response()
 {
-    return new Res();
+    return new Response();
 }
 
 
@@ -312,7 +303,7 @@ function response()
 /**
  * Boostrap 4 Alerts
  *
- * @return \System\Http\Response\Alert
+ * @return \System\Http\Response\Alert\Alert
  */
 function alert()
 {

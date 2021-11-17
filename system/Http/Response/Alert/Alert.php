@@ -1,5 +1,5 @@
 <?php
-namespace System\Http\Response;
+namespace System\Http\Response\Alert;
 class Alert
 {
 

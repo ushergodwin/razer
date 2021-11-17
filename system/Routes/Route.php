@@ -49,7 +49,7 @@ class Route
             {
                 if(preg_match('/{(.*?)}/', $param) === 1)
                 {
-                    $uri = preg_replace('/{(.*?)}/', "(:any)", $uri);
+                    $uri = preg_replace('/{(.*?)}/', "(:args)", $uri);
                 }
             }
             $route::map_uri($uri, $callback);
@@ -114,8 +114,8 @@ class Route
             $resourse::put($name, [$controller, 'update'])->name($name."."."update");
             $resourse::post($name.'/store', [$controller, 'store'])->name($name."."."store");
         }
-        $resourse::get($name.'/{id}/edit', [$controller, 'edit::$1'])->name($name.".$1"."edit");
-        $resourse::get($name.'/{id}', [$controller, 'edit::$1'])->name($name.".$1"."edit");
+        $resourse::get($name.'/{id}/edit', [$controller, 'edit'])->name($name.".$1"."edit");
+        $resourse::get($name.'/{id}', [$controller, 'edit'])->name($name.".$1"."edit");
         $resourse::delete($name.'/{id}', [$controller, 'destroy'])->name($name."."."destroy");
         return $resourse; 
     }
@@ -205,7 +205,7 @@ class Route
         {
             if(preg_match('/{(.*?)}/', $uri) === 1)
             {
-                    $uri = preg_replace('/{(.*?)}/', "(:any)", $uri);
+                    $uri = preg_replace('/{(.*?)}/', "(:args)", $uri);
             }
                
             $route::map_uri($uri, $callback);

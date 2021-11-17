@@ -2,7 +2,7 @@
 
 namespace System\Http\Response;
 
-class Res
+class Response
 {
     protected function status(int $code)
     {
@@ -66,7 +66,11 @@ class Res
         header_remove();
         // set the actual code
         http_response_code($status);
-        header("HTTP/1.0 " . $this->status($status));
+        // set the header to make sure cache is forced
+        header("Cache-Control: no-transform,public,max-age=300,s-maxage=900");
+        // treat this as plain text or html
+        header('Content-Type: text/html');
+        header("Status" . $this->status($status));
         echo $message;
     }
 

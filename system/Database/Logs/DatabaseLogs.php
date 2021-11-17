@@ -6,9 +6,8 @@ trait DatabaseLogs
 {
     protected function logError($error)
     {
-        $root = $_SERVER['DOCUMENT_ROOT'];
 
-        $f = fopen($root.'/database/logs/db-logs.txt', 'a+');
+        $f = fopen(BASE_PATH.'/database/logs/db-logs.txt', 'a+');
         $error = "[" . date("D d M Y H:i:s") . "] \t" . $error;
         $error .= "\n\n ----------------------------------------------------------------------- \n\n";
 
@@ -30,11 +29,10 @@ trait DatabaseLogs
      */
     public static function showDatabaseLogs()
     {
-        $root = $_SERVER['DOCUMENT_ROOT'];
 
-        $f = fopen($root.'/database/logs/db-logs.txt', 'r');
+        $f = fopen(BASE_PATH.'/database/logs/db-logs.txt', 'r');
 
-        $content = fread($f, filesize($root.'/database/logs/db-logs.txt'));
+        $content = fread($f, filesize(BASE_PATH.'/database/logs/db-logs.txt'));
         d($content);
     }
 
@@ -46,9 +44,8 @@ trait DatabaseLogs
      */
     public static function clearDatabasLogs()
     {
-        $root = $_SERVER['DOCUMENT_ROOT'];
 
-        $f = fopen($root.'/database/logs/db-logs.txt', 'w+');
+        $f = fopen(BASE_PATH.'/database/logs/db-logs.txt', 'w+');
         $error = "----------------------------------------------------------------------- \n\n";
         fwrite($f, $error);
         return fclose($f);

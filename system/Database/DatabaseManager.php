@@ -578,7 +578,7 @@ class DatabaseManager extends QueryBuilder
     }
 
     /**
-     * Get a single resource from the database as a result of joining 2 models
+     * Get a single resource from storage
      *
      * @param int|string $id
      * @param string $column defaults to id
@@ -587,7 +587,7 @@ class DatabaseManager extends QueryBuilder
     public function find($id, string $column = 'id')
     {
         $this->is_row = true;
-        return $this->where($column, $id)->get();
+        return $this->where($column, $id);
     }
 
     /**

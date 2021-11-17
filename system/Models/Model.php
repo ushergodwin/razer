@@ -13,6 +13,10 @@ class Model extends Eloquent
     {
         $table_name = explode("\\", strtolower(get_called_class()));
         $this->table = self::decamelize($table_name[(count($table_name) - 1)]);
+        if(property_exists($this, 'tableName'))
+        {
+          $this->table = $this->tableName;
+        }
         $this->massive_data = $massive_data;
     }
 

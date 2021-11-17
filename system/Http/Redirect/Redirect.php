@@ -1,5 +1,5 @@
 <?php
-namespace System\Http;
+namespace System\Http\Redirect;
 
 class Redirect
 {
