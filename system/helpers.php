@@ -300,14 +300,27 @@ function response()
 
 
 
-/**
- * Boostrap 4 Alerts
- *
- * @return \System\Http\Response\Alert\Alert
- */
-function alert()
+if(!function_exists('alert'))
 {
-   return new Alert(); 
+    /**
+     * Boostrap 4 Alerts
+     *
+     * @return \System\Http\Response\Alert\Alert
+     */
+    function alert()
+    {
+    return new Alert(); 
+    }
 }
 
+if(!function_exists('_token'))
+{
+    /**
+    * Get the CRSF Token
+    */
+    function _token()
+    {
+        return CRSF::crsfTokenValue();
+    }
+}
 

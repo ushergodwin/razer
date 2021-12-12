@@ -32,6 +32,8 @@ class QueryBuilder extends Transactions implements Query
 
     protected static $lastInsertId = 0;
 
+    protected $orderby = '';
+
     public function mainTable(string $table)
     {
         $this->query = "SELECT * FROM $table "; 
@@ -170,6 +172,11 @@ class QueryBuilder extends Transactions implements Query
                 $this->query .= " AND {$this->tableName}.deleted_at IS NULL";
             }
         }
+
+        if(!empty(trim($this->orderby)))
+        {
+            $this->query .= $this->orderby;
+        }
     }
 
 
@@ -300,7 +307,7 @@ class QueryBuilder extends Transactions implements Query
 
     public function orderBy(string $column, string $order = "ASC")
     {
-        $this->query .= " ORDER BY $column $order ";
+        $this->orderby .= " ORDER BY $column $order ";
         return $this;
     }
 

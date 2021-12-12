@@ -113,7 +113,7 @@ class Make
         $controller .= "\t\t/**\n\t\t* Show the form for creating a new resource.\n\t\t* @return \System\Http\Response\Response\n\t\t*/\n";
         $controller .= "\t\tpublic function create()\n\t\t{\n\t\t\t// \n \t\t}\n\n";
         $controller .= "\t\t/**\n\t\t* Store a newly created resource in storage.\n\t\t* @param \System\Http\Request\Request \$request\n\t\t* @return \System\Http\Response\Response\n\t\t*/\n";
-        $controller .= "\t\tpublic function strore(Request \$request)\n\t\t{\n\t\t\t// \n \t\t}\n\n";
+        $controller .= "\t\tpublic function store(Request \$request)\n\t\t{\n\t\t\t// \n \t\t}\n\n";
         $controller .= "\t\t/**\n\t\t* Display the specified resource.\n\t\t* @param int|string \$id\n\t\t* @return \System\Http\Response\Response\n\t\t*/\n";
         $controller .= "\t\tpublic function show(\$id)\n\t\t{\n\t\t\t// \n\n \t\t}\n\n";
         $controller .= "\t\t/**\n\t\t* Show the form for editing the specified resource.\n\t\t* @param int|string \$id\n\t\t* @return \System\Http\Response\Response\n\t\t*/\n";

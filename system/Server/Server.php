@@ -107,7 +107,7 @@ class Server
      * 
      * version
      * 
-     * @return string
+     * @return object
      */
     public function browser() {
         $u_agent = $_SERVER['HTTP_USER_AGENT'];

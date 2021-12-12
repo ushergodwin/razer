@@ -124,6 +124,12 @@ class Response
         // ok, validation error, or failure
         header('Status: '.$this->status($status));
         // return the encoded json
+        if(is_array($message))
+        {
+            $message['status'] = $status;
+            echo json_encode($message);
+            return;
+        }
         echo json_encode(array(
             'status' => $status, // success or not?
             'message' => $message
