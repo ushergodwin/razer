@@ -15,7 +15,7 @@ Run grouped migration:              |   php mange migrate:group --run
 ----------------------------------------------------------------------------------------
 Run Migartion modifications         |   php manage migrate:modifiy
 -----------------------------------------------------------------------------------------
-List Migrations:                    |   php manage migrate:list
+List Migrations:                    |   php manage migrate:status
 -----------------------------------------------------------------------------------------
 Drop Migrations:                    |   php manage migrate:rollback
 -----------------------------------------------------------------------------------------

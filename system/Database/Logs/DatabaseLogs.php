@@ -16,7 +16,7 @@ trait DatabaseLogs
             self::clearDatabasLogs();
             fwrite($f, $error);
             fclose($f);
-            return throw new PDOException($error);
+            return new PDOException($error);
         }
         fwrite($f, $error);
         return fclose($f);

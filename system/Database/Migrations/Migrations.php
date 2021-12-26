@@ -40,7 +40,7 @@ class Migrations extends ColumnDefination
 
     private static $dir;
 
-    public static $version = '1.0';
+    public static $version = '1.0.1';
 
     private static $is_file;
 

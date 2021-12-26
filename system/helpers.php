@@ -13,7 +13,6 @@ if(empty(trim($root)))
 {
     $root = @getcwd();
 }
-$root = str_replace('public', '', $root);
 require_once $root . '/vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(dirname( __DIR__));
 $dotenv->safeLoad();
@@ -302,7 +301,7 @@ function response()
 
 if(!function_exists('alert'))
 {
-    /**
+     /**
      * Boostrap 4 Alerts
      *
      * @return \System\Http\Response\Alert\Alert
