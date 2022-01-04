@@ -3,73 +3,48 @@ namespace System\File;
 
 
 /**
- * Class File
- * Image upload and saving it to database
+ * File
+ * Upload and saving it to database
  */
 class File
 {
-    public function __construct()
-    {
-    }
+    protected $allowedFileExtensions = array('jpg','png','jpeg','gif', 'pdf', 'docx', 'ppt');
+
 
     /**
-     * @param string $path The path where to upload the file
-     * @param string $input_name The name of the input field
-     * @return bool|string True if the file/image was uploaded, false if not and string in case of a user error
+     * Allowed File extensions for upload
+     *
+     * @param string|array $extensions
+     * 
+     * defaults to array('jpg','png','jpeg','gif', 'pdf', 'docx', 'ppt')
+     * @return void
      */
-    public function upload_image_in_bg($path, $input_name) {
-        $root = $_SERVER['DOCUMENT_ROOT']."/";
-        $target_dir = $root.$path."/";
-        $target_file = $target_dir . basename($_FILES[$input_name]["name"]);
-        $uploadOk = 1;
-        $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
-        // Check if image file is a actual image or fake image
-        $check = getimagesize($_FILES[$input_name]["tmp_name"]);
-        if($check !== false) {
-            $uploadOk = 1;
-        } else {
-            $uploadOk = 0;
-        }
-        // Check if file already exists
-        if (file_exists($target_file)) {
-            $uploadOk = 0;
-            return "Sorry, file already exists.";
-        }
-        // Check file size
-        if ($_FILES[$input_name]["size"] > 500000) {
-            $uploadOk = 0;
-            return "Sorry, your file is too large.";
-        }
-        // Allow certain file formats
-        if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-            && $imageFileType != "gif" ) {
-            $uploadOk = 0;
-            return "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
-        }
-        // Check if $uploadOk is set to 0 by an error
-        if ($uploadOk == 0) {
-            return "Sorry, your file was not uploaded.";
-            // if everything is ok, try to upload file
-        } else {
-            if (move_uploaded_file($_FILES[$input_name]["tmp_name"], $target_file)) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
+    public function allowedFileExtensions($extensions)
+    {
+        $this->allowedFileExtensions = $extensions;
     }
+
 
     /**
      * @param string $input_name The name of the input file
      * use it to save the image reference in the database
-     * @return mixed
+     * @param bool $array_to_string True if an array of file names should be imploaded.
+     * @return string|array A file name or an indexed array of file names
      */
-    public function get_image_name($input_name) {
-        return $_FILES[$input_name]["name"];
+    public function name($input_name, bool $array_to_string = false) {
+        if(!is_array($_FILES[$input_name]['name']))
+        {
+            return $_FILES[$input_name]["name"];
+        }
+
+        if($array_to_string)
+        {
+            return implode(',', $_FILES[$input_name]['name']);
+        }
+        return array_filter($_FILES[$input_name]['name']);
     }
 
-        /**
+    /**
      * Upload Files to server
      *
      * @param string $dir The directory where to upload files
@@ -84,42 +59,89 @@ class File
      * 
      * StatusCode 3 The input is empty
      */
-    public function uploadFilesToServer(string $dir, string $input_name)
+    public function move(string $dir, string $input_name)
     {
             // File upload configuration 
-            $root = $_SERVER['DOCUMENT_ROOT']."/";
-
+            $root = $_SERVER['DOCUMENT_ROOT']."/public/";
             $targetDir = $root . $dir ."/"; 
-            $allowTypes = array('jpg','png','jpeg','gif', 'pdf', 'docx', 'ppt'); 
+            if(!file_exists($targetDir))
+            {
+                $directory = explode('/', $dir);
+                $dir_count = count($directory);
+                for ($i=0; $i < $dir_count; $i++) { 
+                    # code...
+                    $dir_path = $root . $directory[$i];
+                    $root = $dir_path . "/";
+                    if(!file_exists($dir_path))
+                    {
+                        mkdir($dir_path);
+                    }
+                }
+            }
+
+            $allowTypes = $this->allowedFileExtensions; 
             
-            $statusCode = 5; 
-            $fileNames = array_filter($_FILES[$input_name]['name']); 
-            if(!empty($fileNames)){ 
-                foreach($_FILES[$input_name]['name'] as $key=>$val){ 
+            $statusCode = 5;
+            $uploaded_files = $_FILES[$input_name]['name'];
+            if(!is_array($uploaded_files))
+            {
+                $target_file = $targetDir . basename($_FILES[$input_name]["name"]);
+                $fileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+                if(!in_array($fileType, $allowTypes)){ 
+                    return 2;
+                }
+                if (!move_uploaded_file($_FILES[$input_name]["tmp_name"], $target_file)) {
+                    return 0;
+                }
+                return 1;
+            }
+
+            $fileNames = array_filter($_FILES[$input_name]['name']);
+            $file_count = count($fileNames);
+            if(empty($fileNames)){
+                return 3;
+            }
+
+            if($this->isFileExtensionAllowed($input_name, $targetDir))
+            {
+                for($key = 0; $key < $file_count; $key++){ 
                     // File upload path 
                     $fileName = basename($_FILES[$input_name]['name'][$key]); 
                     $targetFilePath = $targetDir . $fileName; 
                     
                     // Check whether file type is valid 
                     $fileType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION)); 
-                    
-                    if(in_array($fileType, $allowTypes)){ 
                         // Upload file to server 
-                        if(move_uploaded_file($_FILES[$input_name]["tmp_name"][$key], $targetFilePath)){ 
-                            // Image db insert sql 
-                            $statusCode = 1;
-                        }else{ 
-                            $statusCode = 0;
-                        } 
+                    if(move_uploaded_file($_FILES[$input_name]["tmp_name"][$key], $targetFilePath)){ 
+                        // Image db insert sql 
+                        $statusCode = 1;
                     }else{ 
-                        $statusCode = 2; 
-                    } 
+                        $statusCode = 0;
+                    }  
                 } 
 
             }else{ 
-                $statusCode = 3; 
+                $statusCode = 2; 
             } 
         return $statusCode;
+    }
+
+    protected function isFileExtensionAllowed($input_name, $targetDir)
+    {
+        $fileNames = array_filter($_FILES[$input_name]['name']);
+        $file_count = count($fileNames);
+        for($key = 0; $key < $file_count; $key++){ 
+            // File upload path 
+            $fileName = basename($_FILES[$input_name]['name'][$key]); 
+            $targetFilePath = $targetDir . $fileName; 
+            
+            // Check whether file type is valid 
+            $fileType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION));
+            if(!in_array($fileType, $this->allowedFileExtensions)){ 
+                return false;
+            }
+        }
+        return true;
     }
 
 
@@ -130,7 +152,7 @@ class File
      * @param string $input_name The name of the input that submitted
      * @return array
      * 
-     * A associative array returned is form of array(id => id_no, column_name => file_name)
+     * A associative array returned is in form of array(id => id_no, column_name => file_name)
      * 
      * The order of the files is returned as you selected them
      * 
@@ -141,20 +163,16 @@ class File
 
         $filesArray = array();
 
-        if(!empty($fileNames)){ 
-            $i = 0;
-            foreach($_FILES[$input_name]['name'] as $key=>$val){ 
-                // File upload path 
-                $i++;
-
-                $fileName = basename($_FILES[$input_name]['name'][$key]);
+        if(!empty($fileNames)){
+            $file_count = count($fileNames);
+            for($i = 0; $i < $file_count; $i++){
+                $fileName = basename($_FILES[$input_name]['name'][$i]);
                 $filesArray[] = array(
                     "id" => $i,
                     $column_name => $fileName
                 );
             }
         }
-        asort($filesArray);
         return $filesArray;
     }
 }

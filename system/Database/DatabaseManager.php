@@ -607,6 +607,59 @@ class DatabaseManager extends QueryBuilder
         return $this->{$name(...$arguments)};
     }
 
+    public static function import(array $file, string $db = '')
+    {
+        $dm = new self;
+        return $dm->_import($file, $db);
+    }
+
+    protected function _import(array $file, string $db = '')
+    {
+        $path = BASE_PATH . "/database/imports/";
+        $executed_files = 0;
+        if(empty($file))
+        {
+            return false;
+        }
+        
+        if(!empty(trim($db)))
+        {
+            $this->database = $db;
+        }
+
+        $newConnection = $this->getNewConnectionInstance();
+        
+        $file_count = count($file);
+        for ($i=0; $i < $file_count; $i++) { 
+            $import_file = $path . $file[$i];
+            if(file_exists($import_file))
+            {
+                $query = file_get_contents($import_file);
+                $stmt = $newConnection->prepare($query);
+                try {
+                    $stmt->execute();
+                    $executed_files++;
+                } catch(PDOException $e)
+                {
+                    $this->logError($e->getMessage());
+                }
+            }
+        }
+        $this->createNewConnection();
+        return $executed_files == $file_count;
+    }
+
+    /**
+     * Swicth Database before querying
+     *
+     * @param string $db
+     * @return void
+     */
+    public static function switchDatabase($db)
+    {
+        self::$newdbConnection = $db;
+    }
+    
     
     public function __destruct()
     {

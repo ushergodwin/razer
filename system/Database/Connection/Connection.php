@@ -1,6 +1,6 @@
 <?php
 namespace System\Database\Connection;
-require_once APP_PATH.'config/database.php';
+require_once APP_PATH.'Config/database.php';
 
 use Exception;
 use PDO;
@@ -48,14 +48,13 @@ class Connection
     protected function connect() 
     {
         $dsn = "mysql:host=".HOST.";dbname=".$this->database;
-        $conn = (object) "";
         try {
             $conn = new PDO($dsn, USERNAME, PASSWORD, array(PDO::MYSQL_ATTR_FOUND_ROWS));
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            return $conn;
         }catch (PDOException $PDOException) {
             echo $PDOException->getMessage();
         }
-        return $conn;
     }
 
 
@@ -68,6 +67,11 @@ class Connection
     {
         $db = new self;
         return $db->database;
+    }
+
+    public function connectedDB()
+    {
+        return $this->database;
     }
 
     public function __destruct()

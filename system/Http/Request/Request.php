@@ -128,8 +128,13 @@ class Request {
         $key = trim($key);
 
         if (isset($_POST[$key]))
+        {
+            if(is_array($_POST[$key]))
+            {
+                return $_POST[$key];
+            }
             return filter_var($this->xss_clean($_POST[$key]), FILTER_SANITIZE_STRING);
-        
+        }
         return $default;
     }
 
@@ -354,6 +359,16 @@ class Request {
     public function decoded()
     {
         return html_entity_decode($this->html_decode);
+    }
+
+    /**
+     * Capture the User Request
+     *
+     * @return string
+     */
+    public static function capture()
+    {
+        return $_SERVER['REQUEST_URI'];
     }
     
 }

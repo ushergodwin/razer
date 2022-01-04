@@ -2,11 +2,7 @@
 namespace System\App;
 session_start();
 
-define("VERSION", '1.0.0');
-
-include_once BASE_PATH.'/vendor/autoload.php';
-
-strtolower(env("ERROR_REPORTING")) === "true" ? ini_set('display_errors', 1) : ini_set('display_errors', 0);
+define("VERSION", '1.0.1');
 
 use System\Routes\Route;
 use System\Http\Request\Request;
@@ -18,7 +14,7 @@ define("APP_PATH", BASE_PATH."/app/");
 
 define("APP_NAME", env('APP_NAME'));
 
-include_once(APP_PATH."/routes/routes.php");
+include_once(APP_PATH."/routes/web.php");
 
 
 /**
@@ -27,26 +23,29 @@ include_once(APP_PATH."/routes/routes.php");
 class App 
 {
 
+    protected $request_uri;
     /**
-     * Boot the application
+     * Boot the application and handle the request
      *
      * @return \System\App\App
      */
-    public static function Boot() {
-        return new self;
+    public static function handle($request) {
+        $app = new self;
+        $app->request_uri = $request;
+        return $app;
     }
 
     /**
-     * Run the application
+     * Send the user request to internal app and return the response
      *
-     * @return void
+     * @return Response
      */
-    public function run()
+    public function send()
     {
-        return $this->__init__();
+        return $this->run();
     }
 
-    private function __init__() {
+    private function run() {
         $routes = Route::$routes;
         //re order routes such that dynamic ones come last
         foreach($routes as $key => $value)
@@ -57,11 +56,12 @@ class App
                 $routes[$key] = $value;
             }
         }
-        $uri = $_SERVER['REQUEST_URI'];
+
         //Simple routes.
         if (isset($_GET))
-            $uri = explode("?", $uri)[0];
-
+        {
+            $uri = explode("?", $this->request_uri)[0];
+        }
         $uri_exploded = explode("/", $uri);
         $uri_exploded_len = count($uri_exploded);
         //The function is expected to have arguments
@@ -71,7 +71,7 @@ class App
                 //For urls that end in slashes, we truncate the last space and match the uri to the perfect route
                 //Eg, ./some/ and ./some are the same. There we treat both as the same
                 continue;
-            array_push($args, $uri_exploded[$i]);
+            array_push($args, "/" .$uri_exploded[$i]);
         }
 
         $args_array = $args;
@@ -88,30 +88,23 @@ class App
     private function map_uri_to_method($routes, $args, $args_array)
     {
         foreach ($routes as $route => $val) {
-            $is_args_supplied = false;
             $dynamic_route = explode("/", $route);
-            if (in_array("(:args)", $dynamic_route)) {
-                $is_args_supplied = true;
-                //Dynamic array comes from route after removing the (:args) argument
-                //We use it to determine the exact url by match the uri with the route class arguments
-                //unset($dynamic_route[count($dynamic_route) - 1]);
-            }
+            $is_args_supplied = (in_array("(:args)", $dynamic_route)) ? true : false;
             if (! $is_args_supplied) {
                 //Less build the function from the appropriate file
                 $val_route = array();
 
                 if ($route == $args) {
-                    if (is_callable($val)) {
+                    if (is_object($val) && is_callable($val)) {
                         
-                        call_user_func_array($val, [new Request]);
-                        return;
+                        return call_user_func_array($val, [new Request]);
                     }else {
                         $val_route = explode("::", $val);
                     }
 
                     $class_ucfirst = ucfirst($val_route[0]);
                     
-                    $class = New $class_ucfirst;
+                    $class = new $class_ucfirst;
                     if ($_SERVER['REQUEST_METHOD'] == "POST"){
                         return call_user_func_array(array($class, $val_route[1]), [new Request]);
                     }
@@ -143,11 +136,8 @@ class App
                     $dynamic_route_reversed = implode("/", $dynamic_route_reversed);
                     if (strcmp($args_array_reversed, $dynamic_route_reversed) == 0) {
                         //When the strings match, we then route the request to the called class and method
-                        if(is_callable($val))
-                        {
-                            return call_user_func_array($val, $func_arguments);
-                        }
-                        if(isset($_POST['_method']) and $_POST['_method'] == "DELETE")
+  
+                        if(isset($_POST['_method']) && $_POST['_method'] == "DELETE")
                         {
                             $val = implode('::', $val);   
                         }
@@ -155,7 +145,7 @@ class App
                         
                         $class_ucfirst = ucfirst($val_route[0]);
                         
-                        $class = New  $class_ucfirst;
+                        $class = new  $class_ucfirst;
                         return call_user_func_array(array($class, $val_route[1]), $func_arguments);
                     }
                 } else

@@ -182,9 +182,6 @@ class Route
              || strtoupper($_POST['_method']) == "DELETE")
             {
                 $route::map_uri($uri, $callback);  
-            }else {
-                response()->send(405, 'Method not allowed!');
-                die();
             }
         }
         return $route;

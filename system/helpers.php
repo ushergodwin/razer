@@ -1,5 +1,6 @@
 <?php
 use League\BooBoo\BooBoo;
+use System\File\File;
 use System\Http\CRSF\CRSF;
 use System\Http\Redirect\Redirect;
 use System\Http\Request\Request;
@@ -8,12 +9,7 @@ use System\Http\Response\Response;
 use System\Password\Password;
 use System\Views\Template;
 
-$root = BASE_PATH;
-if(empty(trim($root)))
-{
-    $root = @getcwd();
-}
-require_once $root . '/vendor/autoload.php';
+require_once __DIR__ . "/../vendor/autoload.php";
 $dotenv = Dotenv\Dotenv::createImmutable(dirname( __DIR__));
 $dotenv->safeLoad();
 
@@ -27,8 +23,8 @@ if(!function_exists('env')) {
     /**
      * Get the environment settings
      */
-	function env($key) {
-		return $_ENV[$key];
+	function env(string $key, $default = null) {
+		return isset($_ENV[$key]) ? $_ENV[$key]: $default;
 	}
 
 }
@@ -113,7 +109,7 @@ if(!function_exists('session'))
      *
      * @param string|array $key The sesion key to get or an associative array of key and value to set in a session
      * @param mixed $default The deafult value to return if the key is not found
-     * @return bool|string
+     * @return mixed
      */
     function session($key, $default =NULL) {
         if (is_array($key)) {
@@ -195,7 +191,11 @@ if(!function_exists('render'))
     function render(string $view, array $context)
     {
         $view = str_replace('.', '/', $view);
-        return Template::view($view, $context);
+        Template::view($view, $context);
+        if(isset($_SESSION['responseMessage']))
+        {
+            unset($_SESSION['responseMessage']);
+        }
     }
 }
 
@@ -323,3 +323,15 @@ if(!function_exists('_token'))
     }
 }
 
+if(!function_exists('files'))
+{
+    /**
+     * File Upload
+     *
+     * @return \System\File\File
+     */
+    function files()
+    {
+        return new File();
+    }
+}

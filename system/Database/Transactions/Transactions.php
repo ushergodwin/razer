@@ -57,18 +57,19 @@ class Transactions extends Connection
     /**
      * Establish a new connection
      *
-     * @return \System\Database\Connection\Connection
+     * @return \PDO
      */
     protected function createNewConnection()
     {
         $this->db = null;
         $this->db = $this->connect();
+        return $this->db;
     }
 
     /**
      * Get a new connection instance
      *
-     * @return \System\Database\Connection\Connection
+     * @return \PDO
      */
     protected function getNewConnectionInstance()
     {

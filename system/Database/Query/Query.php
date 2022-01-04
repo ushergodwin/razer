@@ -107,9 +107,9 @@ interface Query
     /**
      * Add a DISTINCT clause to a query
      *
-     * @param string|null $column
+     * @param string $column
      */
-    public function distinct(string $column = null);
+    public function distinct(string $column);
 
 
     /**

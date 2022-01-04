@@ -1,6 +1,10 @@
-<IfModule mod_rewrite.c>
-    RewriteEngine on
-    # Redirect requests to public
-    RewriteRule  ^$ public/    [L]
-    RewriteRule  (.*) public/$1 [L]
-</IfModule>
+RewriteEngine on
+
+# Redirect Trailing Slashes If Not A Folder...
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} (.+)/$
+RewriteRule ^ %1 [L,R=301]
+
+RewriteCond %{REQUEST_URI} !^public
+
+RewriteRule ^(.*)$ public/$1 [L]

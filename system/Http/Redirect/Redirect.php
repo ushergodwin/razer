@@ -28,12 +28,13 @@ class Redirect
     {
         $url = str_replace('.', '/', $url);
         $url = url($url);
-        return header('location: ' . $url);
+        header('location: ' . $url);
+        exit;
     }
     /**
      * Return to the previous request URI
      *
-     * @return \System\Http\Redirect
+     * @return \System\Http\Redirect\Redirect
      */
     public function back()
     {
@@ -44,20 +45,20 @@ class Redirect
 
     /**
      * Redirect to the previous Request URI with a message
-     *
+     * @param string $key
      * @param string $message
-     * @return \System\Http\Redirect
+     * @return \System\Http\Redirect\Redirect
      */ 
-    public function with(string $message)
+    public function with(string $key, string $message)
     {
-        session(['responseMessage' => $message]);
+        session(['responseMessage' => array_to_object([$key => $message])]);
         return $this;
     }
 
 
     /**
      * Redirect back with input data previously submited
-     * @return \System\Http\Redirect
+     * @return \System\Http\Redirect\Redirect
      */
     public function withInput()
     {

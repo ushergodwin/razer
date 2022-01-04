@@ -15,8 +15,7 @@ class Validate
      */
     public function __construct(array $rules)
     {
-       $this->validate($rules); 
-       return $this;
+       return $this->validate($rules); 
     }
 
 
@@ -44,6 +43,7 @@ class Validate
                 }
             }
         }
+        return $this->isValid();
     }
 
 
@@ -206,11 +206,12 @@ class Validate
     }
 
 
-    public function __destruct()
+    public function isValid()
     {
         if(!empty($_SESSION['errors']))
         {
-            redirect('', 419)->back()->withInput()->with('Error');
+            return redirect()->back()->withInput();
         }
+        return $this;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 namespace System\Database\Logs;
-use PDOException;
+use Exception;
 
 trait DatabaseLogs
 {
@@ -8,18 +8,10 @@ trait DatabaseLogs
     {
 
         $f = fopen(BASE_PATH.'/database/logs/db-logs.txt', 'a+');
-        $error = "[" . date("D d M Y H:i:s") . "] \t" . $error;
-        $error .= "\n\n ----------------------------------------------------------------------- \n\n";
-
-        if(strtolower(env('ENVIRONMENT')) === 'local')
-        {
-            self::clearDatabasLogs();
-            fwrite($f, $error);
-            fclose($f);
-            return new PDOException($error);
-        }
+        $error = "[" . date("D d M Y H:i:s") . "]\t" . $error;
         fwrite($f, $error);
-        return fclose($f);
+        fclose($f);
+        throw new Exception($error);
     }
 
         /**

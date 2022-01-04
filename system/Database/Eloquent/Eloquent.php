@@ -21,8 +21,7 @@ class Eloquent extends FluentApi
 
     public static function where(string $column, string $value, string $operator = '=')
     {
-        $table_name = explode("\\", get_called_class());
-        $table_name = self::decamelize($table_name[(count($table_name) - 1)]);
+        $table_name = self::getClassName();
         
         if(property_exists(get_called_class(), 'tableName'))
         {
@@ -43,8 +42,7 @@ class Eloquent extends FluentApi
      */
     public static function find($id, string $column = 'id')
     {
-        $table_name = explode("\\", get_called_class());
-        $table_name = self::decamelize($table_name[(count($table_name) - 1)]);
+        $table_name = self::getClassName();
         
         if(property_exists(get_called_class(), 'tableName'))
         {
@@ -64,8 +62,7 @@ class Eloquent extends FluentApi
      */
     public static function all()
     {
-        $table_name = explode("\\", get_called_class());
-        $table_name = self::decamelize($table_name[(count($table_name) - 1)]);
+        $table_name = self::getClassName();
         
         if(property_exists(get_called_class(), 'tableName'))
         {
@@ -131,8 +128,7 @@ class Eloquent extends FluentApi
         $model = explode(',', $model);
       }
 
-      $table_name = explode("\\", get_called_class());
-      $table_name = self::decamelize($table_name[(count($table_name) - 1)]);
+      $table_name = self::getClassName();
 
       if(property_exists(get_called_class(), 'tableName'))
       {
@@ -141,9 +137,9 @@ class Eloquent extends FluentApi
         $table_name = $class->tableName;
       }
 
-      $first_table = $model[0];
+      $first_table = self::getClassName($model[0]);
       return DB::table($table_name)->
-      join(Grammer::plural($first_table), $table_name.".". $first_table . "_id",
+      join(Grammer::plural($first_table), $table_name.".". Grammer::singular($first_table) . "_id",
        Grammer::plural($first_table) . ".id");
 
     }
@@ -159,8 +155,7 @@ class Eloquent extends FluentApi
      */
     public static function join(string $table, string $first, string $second, string $join = 'INNER')
     {
-      $table_name = explode("\\", get_called_class());
-      $table_name = self::decamelize($table_name[(count($table_name) - 1)]);
+      $table_name = self::getClassName();
 
       if(property_exists(get_called_class(), 'tableName'))
       {
@@ -172,15 +167,15 @@ class Eloquent extends FluentApi
       switch(strtolower($join))
       {
         case 'right':
-          return DB::table($table)->rightJoin($table, $first, $second);
+          return DB::table($table_name)->rightJoin($table, $first, $second);
           break;
 
         case 'left': 
-          return DB::table($table)->leftJoin($table, $first, $second);
+          return DB::table($table_name)->leftJoin($table, $first, $second);
           break;
 
         default: 
-          return DB::table($table)->join($table, $first, $second);
+          return DB::table($table_name)->join($table, $first, $second);
       }
     }
 
@@ -195,8 +190,7 @@ class Eloquent extends FluentApi
      */
     public static function between(string $column, int $start, int $end)
     {
-      $table_name = explode("\\", get_called_class());
-      $table_name = self::decamelize($table_name[(count($table_name) - 1)]);
+      $table_name = self::getClassName();
 
       if(property_exists(get_called_class(), 'tableName'))
       {
@@ -218,8 +212,7 @@ class Eloquent extends FluentApi
      */
     public static function range(int $start, int $end)
     {
-      $table_name = explode("\\", get_called_class());
-      $table_name = self::decamelize($table_name[(count($table_name) - 1)]);
+      $table_name = self::getClassName();
 
       if(property_exists(get_called_class(), 'tableName'))
       {
@@ -229,5 +222,16 @@ class Eloquent extends FluentApi
       }
 
       return DB::table($table_name)->range($start, $end);
+    }
+
+
+    protected static function getClassName($namespace = '')
+    {
+      $table_name = explode("\\", get_called_class());
+      if(!empty($namespace))
+      {
+        $table_name = explode("\\", $namespace);
+      }
+      return self::decamelize($table_name[(count($table_name) - 1)]);
     }
 }
