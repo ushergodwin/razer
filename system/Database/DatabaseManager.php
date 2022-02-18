@@ -84,7 +84,11 @@ class DatabaseManager extends QueryBuilder
         if($column !== null)
         {
             $column = "COUNT($column)";
-            return $this->get($column)->{$column};
+            if($this->is_row)
+            {
+                return $this->get($column)->total_value;
+            }
+            return $this->get($column)[0]->total_value;
         }
         return count($this->get());
     }
@@ -154,9 +158,13 @@ class DatabaseManager extends QueryBuilder
     public function value(string $column)
     {
         $this->single_column = $column;
-
-        $this->get($column);
-        return $this->single_column;
+        $data = $this->get($column);
+        if(!empty($data))
+        {
+            return $data[0]->{$column};
+            return $data;
+        }
+        return "";
         
     }
 
@@ -216,22 +224,31 @@ class DatabaseManager extends QueryBuilder
             
             if($this->is_row)
             {
+                if(!empty(trim($this->single_column)))
+                {
+                    $stmt = $this->bindQueryData($this->query, $this->queryData);
+                    return $this->executeOne($stmt);
+                }
+
                 $stmt = $this->bindQueryData($this->query, $this->queryData);
                 $this->executeRow($stmt);
+
+                if(count($this->result()) === 1)
+                {
+                    return $this->result()[0];
+                }
                 return $this->result();
             }
 
-            if(!empty(trim($this->single_column)))
-            {
-                
-                $stmt = $this->bindQueryData($this->query, $this->queryData);
-                $this->executeOne($stmt);
-                return;
-            }
 
             if($columns !== "*")
             {
                 $this->query = str_replace("*", $columns, $this->query);
+            }
+
+            if(!empty(trim($this->limit)))
+            {
+                $this->query .= $this->limit;
             }
             
             $stmt = $this->bindQueryData($this->query, $this->queryData);
@@ -277,10 +294,9 @@ class DatabaseManager extends QueryBuilder
             
             if(!empty($value))
             {
-                $this->single_column = $value[$this->single_column];
-                return;
+                return $value[$this->single_column];
             }
-            $this->single_column = '<span style="color:red;">not found</span>';
+            return $value;
         } catch(PDOException $e)
         {
           $this->logError($e->getMessage()); 
@@ -317,8 +333,7 @@ class DatabaseManager extends QueryBuilder
     public function save(array $data)
     {
         $bindings = $data;
-
-        if(gettype(reset($data)) !== "string")
+        if(gettype(reset($data)) === "array")
         {
             $bindings = $data[0];
             $this->queryData = $data;
@@ -628,7 +643,7 @@ class DatabaseManager extends QueryBuilder
         }
 
         $newConnection = $this->getNewConnectionInstance();
-        
+
         $file_count = count($file);
         for ($i=0; $i < $file_count; $i++) { 
             $import_file = $path . $file[$i];
@@ -660,7 +675,6 @@ class DatabaseManager extends QueryBuilder
         self::$newdbConnection = $db;
     }
     
-    
     public function __destruct()
     {
         $this->db = null;
@@ -671,7 +685,7 @@ class DatabaseManager extends QueryBuilder
         $this->single_column = '';
         $this->is_aggregate = false;
         $this->is_join = false;
-        $this->is_like = false;
         $this->row_query = '';
+        $this->limit = "";
     }
 }

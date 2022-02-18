@@ -24,8 +24,6 @@ class QueryBuilder extends Transactions implements Query
 
     protected $is_join = false;
 
-    protected $is_like = false;
-
     protected $row_query = '';
 
     protected static $affectedRows = 0;
@@ -33,6 +31,9 @@ class QueryBuilder extends Transactions implements Query
     protected static $lastInsertId = 0;
 
     protected $orderby = '';
+
+    protected $limit = '';
+    
 
     public function mainTable(string $table)
     {
@@ -59,7 +60,7 @@ class QueryBuilder extends Transactions implements Query
     {
         $sub_query = "SELECT * FROM {$this->tableName} AND ";
         if(strpos($this->query, "DISTINCT") !== false)
-        {//dd($columns);
+        {
             $sub_query = "SELECT DISTINCT {$columns} FROM {$this->tableName} AND ";
             $sub_query_len = strlen($sub_query);
             $this->query = substr($this->query, $sub_query_len, strlen($this->query) - $sub_query_len);
@@ -258,7 +259,7 @@ class QueryBuilder extends Transactions implements Query
 
     public function like(string $column, string $value)
     {
-        $this->is_like = true;
+        $this->is_where = true;
         $value = htmlentities($value);
         $this->query .= " AND $column LIKE '$value' ";
         return $this;
@@ -267,7 +268,7 @@ class QueryBuilder extends Transactions implements Query
 
     public function OrLike(string $column, string $value)
     {
-        $this->is_like = true;
+        $this->is_where = true;
         $value = htmlentities($value);
         $this->query .= " OR $column LIKE '$value' ";
         return $this;
@@ -275,7 +276,7 @@ class QueryBuilder extends Transactions implements Query
 
     public function between(string $column, $first, $second)
     {   
-        $this->is_like = true;
+        $this->is_where = true;
         $this->query .= " AND $column BETWEEN ? AND ? ";
         $this->queryData[] = $first;
         $this->queryData[] = $second;

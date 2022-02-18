@@ -108,6 +108,18 @@ trait Modifications
         $this->db = null;
     }
 
+    /**
+     * ADD COLUMN TO A MODEL
+     *
+     * Call after() method to execute the command
+     * 
+     * @param string $column
+     * @param string $datatype
+     * @param integer|null $length
+     * @param boolean $nullable
+     * @param string|null $default
+     * @return $this
+     */
     public function addColumn(string $column, string $datatype, 
     int $length = null, bool $nullable = false, string $default = null)
     {
@@ -124,9 +136,10 @@ trait Modifications
         if($length !== null)
         {
             self::$add_sql .=" ADD `$column` ". $datatype . "($length) $constraint, ";
-            return $this;
+        } else {
+            self::$add_sql .= " ADD `$column` $datatype $constraint, ";
         }
-        self::$add_sql .= " ADD `$column` $datatype $constraint, ";
+        
 
         if($default !== null)
         {

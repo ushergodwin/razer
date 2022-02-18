@@ -13,7 +13,7 @@ Group Migrations into 1 sql file    |   php manage migrate:group
 ----------------------------------------------------------------------------------------
 Run grouped migration:              |   php mange migrate:group --run
 ----------------------------------------------------------------------------------------
-Run Migartion modifications         |   php manage migrate:modifiy
+Run Migartion modifications         |   php manage migrate:modify
 -----------------------------------------------------------------------------------------
 List Migrations:                    |   php manage migrate:status
 -----------------------------------------------------------------------------------------

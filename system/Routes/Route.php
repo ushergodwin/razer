@@ -103,21 +103,28 @@ class Route
      *
      * @param string $name
      * @param string $controller
+     * @param callable $appendURI An associative array of request method and the callback method to be added to the resource route.
+     * 
+     * The call back takes in 2 arguments, $uri and the $class name
      * @return \System\Routes\Route
      */
-    public static function resource(string $name, string $controller) {
-        $resourse = new self;
-        $resourse::get($name, [$controller, 'index'])->name($name."."."index");
-        $resourse::get($name.'/create', [$controller, 'create'])->name($name."."."create");
+    public static function resource(string $name, string $controller, $appendURI = NULL) {
+        $resource = new self;
+        $resource::get($name, [$controller, 'index'])->name($name."."."index");
+        $resource::get($name.'/create', [$controller, 'create'])->name($name."."."create");
 
         if ((new self)->requestMethod() == 'post'){
-            $resourse::put($name, [$controller, 'update'])->name($name."."."update");
-            $resourse::post($name.'/store', [$controller, 'store'])->name($name."."."store");
+            $resource::put($name, [$controller, 'update'])->name($name."."."index");
+            $resource::post($name.'/store', [$controller, 'store'])->name($name."."."store");
         }
-        $resourse::get($name.'/{id}/edit', [$controller, 'edit'])->name($name.".$1"."edit");
-        $resourse::get($name.'/{id}', [$controller, 'edit'])->name($name.".$1"."edit");
-        $resourse::delete($name.'/{id}', [$controller, 'destroy'])->name($name."."."destroy");
-        return $resourse; 
+        $resource::get($name.'/{id}/edit', [$controller, 'edit'])->name($name.".$1"."edit");
+        $resource::get($name.'/{id}', [$controller, 'how'])->name($name.".$1"."show");
+        $resource::delete($name.'/{id}', [$controller, 'destroy'])->name($name."."."destroy");
+        if(is_callable($appendURI))
+        {
+            call_user_func_array($appendURI, [$name, $controller]);
+        }
+        return $resource; 
     }
 
     
@@ -163,7 +170,12 @@ class Route
      */
     public function name(string $name)
     {
+
         $uri = str_replace('.', '/', $name);
+        if(strpos($name, 'index') !== false)
+        {
+            $uri = explode('.', $name)[0];
+        }
         session([$name => $uri]);
     }
 
@@ -177,10 +189,17 @@ class Route
     static function put(string $uri, $callback) {
         $route = new self;
         if($route::requestMethod() == "post") {
-
+            
             if(isset($_POST['_method']) and strtoupper($_POST['_method']) == "PUT"
              || strtoupper($_POST['_method']) == "DELETE")
             {
+                
+                if (is_array($callback)) {
+                    $class = $callback[0];
+                    $method = $callback[1];
+                    $class = explode('::', $class)[0];
+                    $callback = $class."::".$method;
+                }
                 $route::map_uri($uri, $callback);  
             }
         }
@@ -204,10 +223,30 @@ class Route
             {
                     $uri = preg_replace('/{(.*?)}/', "(:args)", $uri);
             }
-               
+            
+            
+            if (is_array($callback)) {
+                $class = $callback[0];
+                $method = $callback[1];
+                $class = explode('::', $class)[0];
+                $callback = $class."::".$method;
+            }
+            
             $route::map_uri($uri, $callback);
                 
         }
         return $route;
+    }
+
+    protected function appendURI(array $methods, $controller, $name, Route $resource)
+    {
+        foreach ($methods as $key => $method) {
+            # code...
+            $key = strtolower($key);
+            if($key == 'get')
+            {
+                $resource::get($name, [$controller, $method])->name($name.".".$method);   
+            }
+        }
     }
 }

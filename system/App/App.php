@@ -71,7 +71,7 @@ class App
                 //For urls that end in slashes, we truncate the last space and match the uri to the perfect route
                 //Eg, ./some/ and ./some are the same. There we treat both as the same
                 continue;
-            array_push($args, "/" .$uri_exploded[$i]);
+            array_push($args, $uri_exploded[$i]);
         }
 
         $args_array = $args;

@@ -81,14 +81,23 @@ class Eloquent extends FluentApi
      */
     public function save()
     {
-      if(empty($this->data))
-      {
-        $this->data = $this->massive_data;
-      }
-
       if(!empty($this->data) && !empty($this->massive_data))
       {
-        $this->data = array_merge($this->massive_data, $this->data);
+
+        if(gettype(reset($this->massive_data)) === "array"){
+
+            $this->data = array_merge($this->massive_data, [$this->data]);
+
+        }else {
+          $this->data = array_merge($this->massive_data, $this->data);
+
+        }
+        
+      } else {
+            if(empty($this->data) && !empty($this->massive_data))
+          {
+            $this->data = $this->massive_data;
+          }
       }
       return DB::table($this->table)->save($this->data);
     }

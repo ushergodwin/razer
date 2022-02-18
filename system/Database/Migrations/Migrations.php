@@ -607,7 +607,7 @@ class Migrations extends ColumnDefination
         
         for($i = 0; $i < $migration_classes_count; $i++){
             $object2 = new $migration_classes[$i];
-            echo "\e[0;32;40mModifying: \e[0m";
+            echo "\e[0;32;40mAttempt to Modify: \e[0m";
             echo substr($migration_files[$i], 0, strlen($migration_files[$i]) - 4) . "\n";
             
             call_user_func([$object2, 'alter']);
