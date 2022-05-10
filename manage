@@ -1,144 +1,36 @@
 #!/usr/bin/env php
 <?php
 
-use System\Controller\Make;
-use System\Database\Grammer\Grammer;
-use System\Database\Migrations\Migrations;
+require_once __DIR__ .'/vendor/autoload.php';
+
 /**
  * Base Project Path
  * @var BASE_PATH string
  */
+
+use Razer\Console\Console;
+use Razer\Console\Kernel\Kernel;
+
 define('BASE_PATH', __DIR__);
-require_once BASE_PATH. '/system/Database/Migrations/Migrations.php';
 
-Migrations::__init__(BASE_PATH);
-//command line arguments
+/**
+ * Init the console app
+ */
+$console = new Console();
 
-$options = $argv;
+/**
+ * Register the kernel
+ */
+$kernel = new Kernel(BASE_PATH);
 
- if(!empty($options)) {
-     
-    switch ($options[1]) {
-        case 'make:db':
-            if(isset($options[2]))
-            {
-                return Migrations::createDatabase($options[2]);
-            }
-            Migrations::createDatabase();
-            break;
+/**
+ * Make the kernel and run the cosnsole
+ */
 
-        case ($options[1] === '--version' || $options[1] === "-v"):
-            echo "\e[0;32;40mv".Migrations::$version . "\e[0m";
-            break;
-        
-        case ($options[1] === '--help' || $options[1] === "-h"):
-            $f = './system/Database/Migrations/cli-help.txt';
-            $read = file_get_contents($f);
-            echo "\e[0;32;40m$read \e[0m";
-            break;
+ $kernel = $kernel->make($console->arguments());
 
-            
-        case ($options[1] === '--info' || $options[1] === "-i"):
-            Migrations::README();
-            break;
+ /**
+  * Run the Kernel
+  */
 
-        case 'migrate':
-            if(isset($options[2]))
-            {
-                $file = explode('=', $options[2]);
-                Migrations::config([], true);
-                Migrations::RunAll(false, [], [$file[1]]);
-                return;
-            }
-            Migrations::RunAll();
-            break;
-
-        case 'make:migration': 
-            Migrations::config(["table" => $options[2]]);
-            Migrations::makeMigration();
-            break;
-
-        case 'migrate:refresh':
-            Migrations::rollBack(true);
-            break;
-
-        case 'migrate:rollback':
-            Migrations::rollBack();
-            break;
-
-        case 'migrate:group':
-            if(isset($options[2]))
-            {
-                switch (strtolower($options[2])) {
-                    case '--run':
-                        Migrations::RunGroupedMigrations();
-                        break;
-                }
-                return;
-            }
-            Migrations::groupMigrations();
-            break;
-
-        case 'migrate:status':
-            Migrations::listMigrations();
-            break;
-
-        case 'migrate:modify':
-            Migrations::modifyMigrations();
-            break;
-
-        case 'migrate:logs': 
-            if(isset($options[2]))
-            {
-                switch(strtolower($options[2]))
-                {
-                    case '--clear': 
-                        Migrations::clearMigrationErrors();
-                        break;
-                }
-
-                return;
-            }
-            Migrations::showMigrationErrors();
-            break;
-
-        case 'cache:clear': 
-            echo "\e[0;33;40mClearing cache...\e[0m " . "\n";
-            foreach(glob('system/Views/cache/' . '*') as $file) {
-                unlink($file);
-            }
-            echo "\e[0;32;40mCache cleared. \e[0m\n";
-            break;
-
-        case 'make:controller':
-            Make::$path = getcwd();
-            if(!isset($options[3]))
-            {
-                Make::controller($options[2]);
-            }
-            if(isset($options[3]) && strtolower($options[3]) == '--resource')
-            {
-                Make::resourceController($options[2]);
-            }
-            break;
-
-        case 'make:model': 
-            Make::$path = getcwd();
-            if(!isset($options[3]))
-            {
-                Make::model($options[2]);
-            }
-            if(isset($options[3]) && strtoupper($options[2]) == '-M')
-            {
-                Make::model($options[3]);
-                $table = "create_". Grammer::decamelize($options[3]) . "_table";
-                Migrations::config(["table" => $table]);
-                Migrations::makeMigration();
-
-            }
-            break;
-            
-        default:
-            echo "\e[0;33;40mSorry, I do not understand what you mean\n Use \e[0m\e[0;32;40mphp manage -h for help \e[0m";
-    }
-}
+  $kernel->run();

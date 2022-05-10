@@ -21,23 +21,17 @@ if(strpos($_SERVER['HTTP_HOST'], "localhost") !== false || filter_var($_SERVER['
 {
 	exit(
 		"
-		<h1 style='text-align: center; color: red; margin: 10px;'>Oops, " . env("APP_NAME") ." Requires a VIRTUAL HOST.</h1>
+		<h1 style='text-align: center; color: red; margin: 10px;'>Oops, <em>" . env("APP_NAME") ." </em>Requires a VIRTUAL HOST.</h1>
 		<h2 style='text-align: center; color: orange; margin: 10px;'>Can not be accessed on " . $_SERVER['HTTP_HOST'] ."</h2> 
 		<h3 style='text-align: center; color: green'>Please create a virtaul host for this app and access it using the 
-		vhost created!</h4>
+		vhost created! <br/> OR <br/> Head to the root directory of the app and run <code>php manage serve </code>
+		 to run the PHASER development server</h4>
 		"
 	);
 } 
-	
-/**
-* Base Project Path
-* @var BASE_PATH string
-*/
-define("BASE_PATH", $_SERVER['DOCUMENT_ROOT']);
 
-
-use System\App\App;
-use System\Http\Request\Request;
+use Razer\App\App;
+use Razer\Http\Request\Request;
 
 /**
  * Display the maintenance notification if the system is under maintenance
@@ -45,7 +39,7 @@ use System\Http\Request\Request;
 if(strtolower(env("APP_ENV")) == 'maintenance')
 {
 	define('APP_NAME', env('APP_NAME'));
-	require_once '../system/Maintenance/maintenace.php';
+	require_once '../raser/Maintenance/maintenace.php';
 	return false;
 }
 

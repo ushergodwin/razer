@@ -1,6 +1,6 @@
 <?php
-use System\Database\Schema\BluePrint;
-use System\Database\Schema\Schema;
+use Razer\Database\Schema\BluePrint;
+use Razer\Database\Schema\Schema;
 
 
  class CreateUsersTable

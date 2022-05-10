@@ -1,36 +1,33 @@
 {
-	"name": "ushergodwin/phaser",
-	"description": "PHP Library",
-    "keywords": ["bluefaces", "phaser", "php", "sql"],
-	"type": "library",
-	"require": {
-		"php": ">= 7.4",
-		"ext-pdo": "*",
-		"jenssegers/blade": "^1.4",
-		"larapack/dd": "^1.1",
-		"league/booboo": "^2.2",
-		"opis/closure": "^3.6",
-		"phpmailer/phpmailer": "^6.5",
-		"vlucas/phpdotenv": "^5.3"
-	},
-	"license": "MIT",
-	"authors": [
-		{
-			"name": "Tumuhimbise Usher Godwin",
-			"email": "godwintumuhimbise96@gmail.com"
-		}
-	],
-	"autoload": {
-        "files": [
-			"system/helpers.php"
-		],
-		"psr-4": {
-			"System\\": "system/",
-			"App\\": "app/",
-			"System\\App\\": "system/App/"
-		}
+    "name": "ushergodwin/phaser",
+    "description": "PHP Library",
+    "keywords": ["bluefaces", "phaser", "php", "sql", "raser"],
+    "type": "library",
+    "require": {
+        "php": ">= 7.4",
+        "ext-pdo": "*",
+        "jenssegers/blade": "^1.4",
+        "larapack/dd": "^1.1",
+        "league/booboo": "^2.2",
+        "opis/closure": "^3.6",
+        "phpmailer/phpmailer": "^6.5",
+        "vlucas/phpdotenv": "^5.3"
     },
-	"extra": {
+    "license": "MIT",
+    "authors": [{
+        "name": "Tumuhimbise Usher Godwin",
+        "email": "godwintumuhimbise96@gmail.com"
+    }],
+    "autoload": {
+        "files": [
+            "razer/helpers.php"
+        ],
+        "psr-4": {
+            "Razer\\": "razer/",
+            "App\\": "app/"
+        }
+    },
+    "extra": {
         "branch-alias": {
             "dev-master": "3.6.x-dev"
         }
@@ -39,6 +36,6 @@
         "preferred-install": "dist",
         "sort-packages": true
     },
-	"minimum-stability": "dev",
+    "minimum-stability": "dev",
     "prefer-stable": true
 }
