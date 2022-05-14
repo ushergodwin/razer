@@ -1,7 +1,7 @@
 {
-    "name": "ushergodwin/phaser",
+    "name": "ushergodwin/razer-framework",
     "description": "Razer is a PHP framewrok that provides a convenient MVC (Model View Controller) structure for robust systems development",
-    "keywords": ["bluefaces", "phaser", "php", "sql", "raser"],
+    "keywords": ["bluefaces", "framework", "php", "sql", "raser"],
     "type": "library",
     "require": {
         "php": ">= 7.4",
