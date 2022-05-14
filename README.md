@@ -285,11 +285,11 @@ The response class has 2 methods, ie send and json. Send() send a plain text res
  - `Route::resource('products', ProductController::class);` // products is the prefix of the route
  - The above creates the following routes
  - /products (GET)
+ - /products (PUT)
  - /products/create (GET)
- - /products/show/product_id (GET)
+ - /products/product_id (GET)
  - /products/product_id/edit (GET)
- - /products/update (POST)
- - /products/destroy (POST)
+ - /products/product_id (DELETE)
  - /products/store (POST)
  - ## Except
  - You can call the except method to ignore the specified class methods when creating routes `Route::resource('products', ProductController::class)->except(['destroy']);`
