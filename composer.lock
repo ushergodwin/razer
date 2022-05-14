@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "60103838168795881e85a03c4e8a1437",
+    "content-hash": "11338eac4bc03146bbfc4abce0e50517",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -1941,6 +1941,66 @@
             "time": "2021-07-27T01:56:02+00:00"
         },
         {
+            "name": "ushergodwin/razer",
+            "version": "v1.0.0-alpha",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ushergodwin/razer-framework.git",
+                "reference": "09eb0786017304dda932639d217b5867d1c9370a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ushergodwin/razer-framework/zipball/09eb0786017304dda932639d217b5867d1c9370a",
+                "reference": "09eb0786017304dda932639d217b5867d1c9370a",
+                "shasum": ""
+            },
+            "require": {
+                "ext-pdo": "*",
+                "jenssegers/blade": "^1.4",
+                "larapack/dd": "^1.1",
+                "league/booboo": "^2.1",
+                "opis/closure": "^3.6",
+                "php": ">= 7.4",
+                "phpmailer/phpmailer": "^6.5",
+                "vlucas/phpdotenv": "^5.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6.0|^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/Razer/helpers.php"
+                ],
+                "psr-4": {
+                    "Razer\\": "src/Razer/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "ushergodwin",
+                    "email": "godwintumuhimbise96@gmail.com"
+                }
+            ],
+            "description": "Razer MVC is a PHP framewrok that provides a convenient MVC (Model View Controller) structure for robust systems development",
+            "keywords": [
+                "bluefaces",
+                "php",
+                "raser",
+                "razer",
+                "sql"
+            ],
+            "support": {
+                "issues": "https://github.com/ushergodwin/razer-framework/issues",
+                "source": "https://github.com/ushergodwin/razer-framework/tree/v1.0.0-alpha"
+            },
+            "time": "2022-05-14T16:46:13+00:00"
+        },
+        {
             "name": "vlucas/phpdotenv",
             "version": "v5.3.0",
             "source": {
@@ -2098,7 +2158,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "ushergodwin/razer": 15
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
@@ -2106,5 +2168,5 @@
         "ext-pdo": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.3.0"
 }

@@ -27,10 +27,9 @@ $kernel = new Kernel(BASE_PATH);
  * Make the kernel and run the cosnsole
  */
 
- $kernel = $kernel->make($console->arguments());
+$kernel = $kernel->make($console->arguments());
 
  /**
   * Run the Kernel
   */
-
-  $kernel->run();
+$kernel->run();
