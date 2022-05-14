@@ -32,6 +32,7 @@ if(strpos($_SERVER['HTTP_HOST'], "localhost") !== false || filter_var($_SERVER['
 
 use Razer\App\App;
 use Razer\Http\Request\Request;
+use Razer\Maintenance\Maintenance;
 
 /**
  * Display the maintenance notification if the system is under maintenance
@@ -39,7 +40,7 @@ use Razer\Http\Request\Request;
 if(strtolower(env("APP_ENV")) == 'maintenance')
 {
 	define('APP_NAME', env('APP_NAME'));
-	require_once '../raser/Maintenance/maintenace.php';
+	Maintenance::enable();
 	return false;
 }
 
@@ -55,3 +56,4 @@ if(strtolower(env("APP_ENV")) == 'maintenance')
 |
 */
 App::handle(Request::capture())->send();
+
