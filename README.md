@@ -1,5 +1,5 @@
-# Razer MCV
-- Razer MCV is a PHP library that provides a convenient MVC (Model, View Controller) structure for systems development.
+# Razer FRAMEWORK
+- Razer is a PHP Framework that provides a convenient MVC (Model, View Controller) structure for systems development.
 - Do you want something small but yet powerfull, this is your best choice
 # Table of contents
 ## Database
