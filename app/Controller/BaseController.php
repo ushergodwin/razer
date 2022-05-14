@@ -1,8 +1,7 @@
 <?php
 namespace App\Controller;
 
-use System\Controller\Controller;
-use System\Template\Template;
+use Razer\Controller\Controller;
 
 class BaseController extends Controller
 {
